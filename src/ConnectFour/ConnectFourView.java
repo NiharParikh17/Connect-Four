@@ -10,6 +10,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The actual game view visible to the user or player.
+ * This is the VIEW of mvc architecture.
+ */
 public class ConnectFourView extends JFrame implements ConnectFourObserver, WinnerObserver, ActionListener {
     private ConnectFourModelInterface model;
     private ConnectFourControllerInterface controller;
@@ -27,6 +31,11 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     private JButton exit;
     private JButton reset;
 
+    /**
+     * Constructor for ConnectFourView class
+     * @param model model of the game
+     * @param controller controller of the game
+     */
     public ConnectFourView(ConnectFourModelInterface model, ConnectFourControllerInterface controller){
         super();
         this.model = model;
@@ -97,6 +106,9 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         operationPanel.add(reset);
     }
 
+    /**
+     * Resets the whole game(starts from beginning)
+     */
     void resetView(){
         //Setting board empty
         for(int row = 0; row < model.getTotalRows(); row++){
@@ -113,14 +125,27 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         currentPlayer.setText("Turn: " + model.getPlayer());
     }
 
+    /**
+     * Visibly disables the column which is full
+     * @param column index of the column
+     */
     void disableColumn(int column){
         dropButtons[column].setEnabled(false);
     }
 
+    /**
+     * drops the chip into the column
+     * @param row index of row
+     * @param col index of column
+     * @param color color of the current player
+     */
     void dropChipInView(int row, int col, Color color){
         slots[row][col].setBackground(color);
     }
 
+    /**
+     * Switches turn between two players
+     */
     void switchTurns(){
         currentPlayer.setText("Turn: " + model.getPlayer());
     }
@@ -130,6 +155,10 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         ConnectFourControllerInterface controller = new ConnectFourController(model);
     }
 
+    /**
+     * Action Listener
+     * @param e action event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == exit){
@@ -150,6 +179,10 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         return -1;
     }
 
+    /**
+     * Overridden from ConnectFourObserver interface
+     * updates game after every drop button is clicked
+     */
     @Override
     public void updateGame() {
         dropChipInView(model.getCurrentRow(), model.getCurrentColumn(), model.getColor());
@@ -158,6 +191,10 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         }
     }
 
+    /**
+     * Overridden form WinnerObserver interface
+     * notifies only if there was a winner
+     */
     @Override
     public void updateWinner() {
         controller.reset();

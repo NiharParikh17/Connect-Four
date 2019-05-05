@@ -9,6 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * The game logic is found here
+ * This is the MODEL of the mvc architecture
+ */
 public class ConnectFourModel implements ConnectFourModelInterface {
     private final int totalRows = 6;
     private final int totalColumns = 7;
@@ -26,6 +30,9 @@ public class ConnectFourModel implements ConnectFourModelInterface {
     private int currentColumn;
     private int disablingButton;
 
+    /**
+     * Constructor for the ConnectFourModel class
+     */
     public ConnectFourModel(){
         observers = new ArrayList<>();
         winObservers = new ArrayList<>();
@@ -49,41 +56,75 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         disablingButton = -1;
     }
 
+    /**
+     *
+     * @return total rows in board
+     */
     @Override
     public int getTotalRows() {
         return totalRows;
     }
 
+    /**
+     *
+     * @return total columns in board
+     */
     @Override
     public int getTotalColumns() {
         return totalColumns;
     }
 
+    /**
+     *
+     * @return name of the current player
+     */
     @Override
     public String getPlayer() {
         return currentPlayer.getName();
     }
 
+    /**
+     *
+     * @return index of the current row
+     */
     @Override
     public int getCurrentRow() {
         return currentRow;
     }
 
+    /**
+     *
+     * @return index of the current column
+     */
     @Override
     public int getCurrentColumn() {
         return currentColumn;
     }
 
+    /**
+     *
+     * @return color of the current player
+     */
     @Override
     public Color getColor() {
         return currentPlayer.getColor();
     }
 
+    /**
+     *
+     * @return -1 if no button to disable,
+     *          index of the button otherwise
+     */
     @Override
     public int getDisableButton() {
         return disablingButton;
     }
 
+    /**
+     * place chip in the available slot of
+     *      the column of the current player
+     * @param column index of the column
+     */
     @Override
     public void dropChip(int column) {
         board[availableSpot[column]][column] = currentPlayer.getId();
@@ -180,11 +221,17 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         return true;
     }
 
+    /**
+     * Exits the game
+     */
     @Override
     public void exit() {
         System.exit(0);
     }
 
+    /**
+     * Resets the game in the model
+     */
     @Override
     public void reset() {
         currentPlayer = player1;
@@ -200,21 +247,37 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         }
     }
 
+    /**
+     * Registers the ConnectFourObserver
+     * @param o connect four observer
+     */
     @Override
     public void registerObserver(ConnectFourObserver o) {
         observers.add(o);
     }
 
+    /**
+     * Registers the WinnerObserver
+     * @param o winner observer
+     */
     @Override
     public void registerObserver(WinnerObserver o) {
         winObservers.add(o);
     }
 
+    /**
+     * Removes the ConnectFourObserver
+     * @param o connect four observer
+     */
     @Override
     public void removeObserver(ConnectFourObserver o) {
         observers.remove(o);
     }
 
+    /**
+     * Removes the WinnerObserver
+     * @param o winner observer
+     */
     @Override
     public void removeObserver(WinnerObserver o) {
         winObservers.remove(o);
