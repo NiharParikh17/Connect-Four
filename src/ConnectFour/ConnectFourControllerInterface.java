@@ -1,6 +1,8 @@
+package ConnectFour;
+
 /**
 	@author Nihar Parikh
-	ConnectFourControllerInterface.java
+	ConnectFour.ConnectFourControllerInterface.java
 */
 
 public interface ConnectFourControllerInterface {

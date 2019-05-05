@@ -1,6 +1,8 @@
+package ConnectFour;
+
 /**
 	@author Nihar Parikh
-	Player.java
+	ConnectFour.Player.java
 */
 
 import java.awt.Color;

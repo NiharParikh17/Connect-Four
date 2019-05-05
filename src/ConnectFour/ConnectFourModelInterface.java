@@ -1,6 +1,8 @@
+package ConnectFour;
+
 /**
 	@author Nihar Parikh
-	ConnectFourModelInterface.java
+	ConnectFour.ConnectFourModelInterface.java
 */
 
 import java.awt.*;

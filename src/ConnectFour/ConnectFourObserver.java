@@ -1,6 +1,8 @@
+package ConnectFour;
+
 /**
 	@author Nihar Parikh
-	ConnectFourObserver.java
+	ConnectFour.ConnectFourObserver.java
 */
 
 public interface ConnectFourObserver {

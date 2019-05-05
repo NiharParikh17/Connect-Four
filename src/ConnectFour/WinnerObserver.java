@@ -1,6 +1,8 @@
+package ConnectFour;
+
 /**
 	@author Nihar Parikh
-	WinnerObserver.java
+	ConnectFour.WinnerObserver.java
 */
 
 public interface WinnerObserver {

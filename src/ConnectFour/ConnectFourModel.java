@@ -1,6 +1,8 @@
+package ConnectFour;
+
 /**
 	@author Nihar Parikh
-	ConnectFourModel.java
+	ConnectFour.ConnectFourModel.java
 */
 
 import javax.swing.*;
@@ -28,8 +30,8 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         observers = new ArrayList<>();
         winObservers = new ArrayList<>();
 
-        player1 = new Player("Player 1", 1, Color.RED);
-        player2 = new Player("Player 2", 2, Color.YELLOW);
+        player1 = new Player("ConnectFour.Player 1", 1, Color.RED);
+        player2 = new Player("ConnectFour.Player 2", 2, Color.YELLOW);
         currentPlayer = player1;
 
         board = new int[totalRows][totalColumns];
