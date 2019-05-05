@@ -1,6 +1,8 @@
+package ConnectFour;
+
 /**
 	@author Nihar Parikh
-	ConnectFourView.java
+	ConnectFour.ConnectFourView.java
 */
 
 import javax.swing.*;
@@ -107,7 +109,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
             dropButtons[button].setEnabled(true);
         }
 
-        //Setting Current player to Player 1
+        //Setting Current player to ConnectFour.Player 1
         currentPlayer.setText("Turn: " + model.getPlayer());
     }
 
