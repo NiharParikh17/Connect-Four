@@ -7,6 +7,9 @@ package ConnectFour;
 
 import java.awt.*;
 
+/**
+ * The model class should have at least these methods
+ */
 public interface ConnectFourModelInterface {
     int getTotalRows();
     int getTotalColumns();

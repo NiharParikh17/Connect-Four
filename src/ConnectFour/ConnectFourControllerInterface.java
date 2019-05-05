@@ -5,6 +5,9 @@ package ConnectFour;
 	ConnectFour.ConnectFourControllerInterface.java
 */
 
+/**
+ * The controller class should have at least these methods
+ */
 public interface ConnectFourControllerInterface {
     void dropChip(int column);
 
