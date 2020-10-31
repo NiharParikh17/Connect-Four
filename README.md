@@ -1,2 +1,2 @@
 # Connect-Four
-A simple connect four game using mvc and Java
+Connect four game using Model View Controller (MVC) architecture and Java swing GUI.
