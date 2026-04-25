@@ -1,7 +1,10 @@
-#IntelliJ Generated Files & Folders
+# IntelliJ Generated Files & Folders
 .idea/
 out/
 *.iml
 
-#Basic Java Files
+# Basic Java Files
 *.class
+
+# Others
+.DS_Store
