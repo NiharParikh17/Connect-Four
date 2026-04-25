@@ -6,7 +6,6 @@ import connectfour.model.ConnectFourModel;
 import connectfour.model.ConnectFourModelInterface;
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -45,7 +44,9 @@ import javax.swing.JPanel;
  * <p>The {@code main} entry point is located in this class and bootstraps the
  * application by creating the Model and Controller.</p>
  */
-public class ConnectFourView extends JFrame implements ConnectFourObserver, WinnerObserver, ActionListener {
+public class ConnectFourView
+        extends JFrame
+        implements ConnectFourObserver, WinnerObserver, ActionListener {
     private final ConnectFourModelInterface model;
     private final ConnectFourControllerInterface controller;
 
@@ -75,7 +76,8 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * @param controller the Controller that processes user actions; must not
      *                   be {@code null}
      */
-    public ConnectFourView(ConnectFourModelInterface model, ConnectFourControllerInterface controller) {
+    public ConnectFourView(ConnectFourModelInterface model,
+                           ConnectFourControllerInterface controller) {
         super();
         this.model = model;
         this.controller = controller;
