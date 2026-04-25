@@ -44,8 +44,9 @@ jar {
 checkstyle {
     toolVersion = '10.21.4'
     configFile = file("${rootDir}/configuration/checkstyle/google_checks.xml")
-    ignoreFailures = true
+    ignoreFailures = false
     showViolations = true
+    maxWarnings = 0
 }
 
 checkstyleMain.reports {

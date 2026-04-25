@@ -1,5 +1,11 @@
 package connectfour.controller;
 
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import connectfour.model.ConnectFourModelInterface;
 import connectfour.view.ConnectFourView;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,15 +17,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.*;
-
 /**
- * Unit tests for {@link ConnectFourController}.
- *
- * <p>The test suite uses Mockito to mock both the {@link ConnectFourModelInterface}
- * and the {@link ConnectFourView}, allowing full isolation of controller logic
- * without creating a live Swing window.</p>
- */
+  * Unit tests for {@link ConnectFourController}.
+  *
+  * <p>The test suite uses Mockito to mock both the {@link ConnectFourModelInterface}
+  * and the {@link ConnectFourView}, allowing full isolation of controller logic
+  * without creating a live Swing window.</p>
+  */
 @ExtendWith(MockitoExtension.class)
 class ConnectFourControllerTest {
 
