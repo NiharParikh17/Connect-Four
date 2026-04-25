@@ -1,18 +1,39 @@
 package ConnectFour;
 
-/**
-	@author Nihar Parikh
-	ConnectFour.ConnectFourView.java
-*/
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * The actual game view visible to the user or player.
- * This is the VIEW of mvc architecture.
+ * View component of the MVC architecture for the Connect Four game.
+ *
+ * <p>{@code ConnectFourView} is a Swing {@link JFrame} that renders the full
+ * Connect Four GUI and handles all user interaction. The window is divided
+ * into three sections:</p>
+ * <ol>
+ *   <li><b>Info panel (top)</b> — a label showing which player's turn it is.</li>
+ *   <li><b>Game panel (center)</b> — a grid of "Drop" buttons (one per column)
+ *       and {@link JPanel} slots representing the 6 × 7 board cells. Chip
+ *       colors fill in as players take turns.</li>
+ *   <li><b>Operation panel (bottom)</b> — "Reset" and "Exit" buttons.</li>
+ * </ol>
+ *
+ * <p>This class implements both observer interfaces so it can react to Model
+ * events without polling:</p>
+ * <ul>
+ *   <li>{@link ConnectFourObserver#updateGame()} — repaints the cell that was
+ *       just filled and optionally disables the "Drop" button for a full
+ *       column.</li>
+ *   <li>{@link WinnerObserver#updateWinner()} — triggers a full game reset
+ *       via the Controller after the win/draw dialog is dismissed.</li>
+ * </ul>
+ *
+ * <p>The {@code main} entry point is located in this class and bootstraps the
+ * application by creating the Model and Controller.</p>
+ *
+ * @see ConnectFourModel
+ * @see ConnectFourController
  */
 public class ConnectFourView extends JFrame implements ConnectFourObserver, WinnerObserver, ActionListener {
     private ConnectFourModelInterface model;
@@ -21,10 +42,13 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     private JPanel mainPanel;
 
     private JPanel infoPanel;
+    /** Label displaying whose turn it currently is. */
     private JLabel currentPlayer;
 
     private JPanel gamePanel;
+    /** One "Drop" button per column; disabled automatically when a column is full. */
     private JButton[] dropButtons;
+    /** 2-D array of panels representing the board slots; backgrounds are colored per chip. */
     private JPanel[][] slots;
 
     private JPanel operationPanel;
@@ -32,9 +56,14 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     private JButton reset;
 
     /**
-     * Constructor for ConnectFourView class
-     * @param model model of the game
-     * @param controller controller of the game
+     * Constructs the game window, builds all UI components, registers this
+     * View as an observer with the Model, packs the frame, and makes it
+     * visible.
+     *
+     * @param model      the game Model providing board dimensions and state;
+     *                   must not be {@code null}
+     * @param controller the Controller that processes user actions; must not
+     *                   be {@code null}
      */
     public ConnectFourView(ConnectFourModelInterface model, ConnectFourControllerInterface controller){
         super();
@@ -47,6 +76,9 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         setVisible(true);
     }
 
+    /**
+     * Configures top-level frame properties and assembles the main panel.
+     */
     private void buildView(){
         setTitle("Connect Four");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,6 +86,10 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         add(mainPanel);
     }
 
+    /**
+     * Creates the main {@link BorderLayout} panel and attaches the three
+     * sub-panels: info (NORTH), game (CENTER), and operations (SOUTH).
+     */
     private void buildMainPanel(){
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -66,6 +102,10 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         mainPanel.add(operationPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Builds the info panel containing the turn label initialized to the
+     * current player's name.
+     */
     private void buildInfoPanel(){
         infoPanel = new JPanel();
 
@@ -73,6 +113,11 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         infoPanel.add(currentPlayer);
     }
 
+    /**
+     * Builds the game panel using a {@link GridLayout} with
+     * {@code (totalRows + 1) × totalColumns} cells. The first row contains
+     * the "Drop" buttons; the remaining rows contain board slot panels.
+     */
     private void buildGamePanel(){
         gamePanel = new JPanel();
         gamePanel.setLayout(new GridLayout(model.getTotalRows() + 1, model.getTotalColumns()));
@@ -95,6 +140,9 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         }
     }
 
+    /**
+     * Builds the operation panel containing the "Exit" and "Reset" buttons.
+     */
     private void buildOperationPanel(){
         operationPanel = new JPanel();
 
@@ -107,7 +155,18 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     }
 
     /**
-     * Resets the whole game(starts from beginning)
+     * Resets the entire visual state of the board back to its initial
+     * appearance:
+     * <ul>
+     *   <li>Clears the background color of every slot panel.</li>
+     *   <li>Re-enables all "Drop" buttons (including any that were disabled
+     *       because their column was full).</li>
+     *   <li>Updates the turn label to show the current player (Player 1 after
+     *       a reset).</li>
+     * </ul>
+     *
+     * <p>Called by the Controller in response to a reset action or a
+     * game-over event.</p>
      */
     void resetView(){
         //Setting board empty
@@ -126,38 +185,60 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     }
 
     /**
-     * Visibly disables the column which is full
-     * @param column index of the column
+     * Disables the "Drop" button above the specified column.
+     * Called when the column's {@code availableSpot} counter drops below zero,
+     * meaning the column is completely filled.
+     *
+     * @param column zero-based index of the column whose button should be
+     *               disabled
      */
     void disableColumn(int column){
         dropButtons[column].setEnabled(false);
     }
 
     /**
-     * drops the chip into the column
-     * @param row index of row
-     * @param col index of column
-     * @param color color of the current player
+     * Paints a chip in the board slot at the given position by setting the
+     * slot panel's background color to the player's color.
+     *
+     * @param row   zero-based row index of the target slot
+     * @param col   zero-based column index of the target slot
+     * @param color {@link Color} of the player who just placed the chip
      */
     void dropChipInView(int row, int col, Color color){
         slots[row][col].setBackground(color);
     }
 
     /**
-     * Switches turn between two players
+     * Updates the turn label to display the name of the player who will take
+     * the next turn. Called by the Controller immediately after a chip is
+     * successfully dropped.
      */
     void switchTurns(){
         currentPlayer.setText("Turn: " + model.getPlayer());
     }
 
+    /**
+     * Application entry point. Instantiates the Model and then the Controller
+     * (which in turn creates the View), starting the Connect Four game.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args){
         ConnectFourModelInterface model = new ConnectFourModel();
         ConnectFourControllerInterface controller = new ConnectFourController(model);
     }
 
     /**
-     * Action Listener
-     * @param e action event
+     * Handles button click events for all interactive buttons in the View.
+     *
+     * <ul>
+     *   <li>Clicking <b>Exit</b> delegates to {@link ConnectFourControllerInterface#exit()}.</li>
+     *   <li>Clicking <b>Reset</b> delegates to {@link ConnectFourControllerInterface#reset()}.</li>
+     *   <li>Clicking any <b>Drop</b> button determines the column index and
+     *       delegates to {@link ConnectFourControllerInterface#dropChip(int)}.</li>
+     * </ul>
+     *
+     * @param e the action event generated by a button click
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -170,6 +251,15 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         }
     }
 
+    /**
+     * Determines which "Drop" button was clicked by comparing the event
+     * source against each button in the {@code dropButtons} array.
+     *
+     * @param e the action event from a "Drop" button click
+     * @return zero-based column index of the pressed button, or {@code -1} if
+     *         the source does not match any known button (should not occur
+     *         under normal usage)
+     */
     private int getDropButtonPressed(ActionEvent e){
         for(int but = 0; but < dropButtons.length; but++){
             if(e.getSource() == dropButtons[but]){
@@ -180,8 +270,12 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     }
 
     /**
-     * Overridden from ConnectFourObserver interface
-     * updates game after every drop button is clicked
+     * {@inheritDoc}
+     *
+     * <p>Queries the Model for the row, column, and color of the most recently
+     * placed chip, then repaints the corresponding board slot. If the Model
+     * reports a column to disable, the matching "Drop" button is also
+     * disabled.</p>
      */
     @Override
     public void updateGame() {
@@ -192,8 +286,11 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     }
 
     /**
-     * Overridden form WinnerObserver interface
-     * notifies only if there was a winner
+     * {@inheritDoc}
+     *
+     * <p>Triggers a full game reset through the Controller. This is called
+     * after the win/draw dialog (shown by the Model) is dismissed, so the
+     * board returns to its initial state for a new game.</p>
      */
     @Override
     public void updateWinner() {

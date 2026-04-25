@@ -1,14 +1,19 @@
 package ConnectFour;
 
-/**
-	@author Nihar Parikh
-	ConnectFour.Player.java
-*/
-
 import java.awt.Color;
 
 /**
- * The players playing the game.
+ * Represents a player in the Connect Four game.
+ *
+ * <p>Each player has a unique display name, a numeric identifier used to
+ * mark cells on the internal board grid, and a color used to visually
+ * distinguish their chips in the GUI.</p>
+ *
+ * <p>The two default players created by {@link ConnectFourModel} are:</p>
+ * <ul>
+ *   <li><b>Player 1</b> — id {@code 1}, color {@link Color#RED}</li>
+ *   <li><b>Player 2</b> — id {@code 2}, color {@link Color#YELLOW}</li>
+ * </ul>
  */
 public class Player {
     private String name;
@@ -16,10 +21,13 @@ public class Player {
     private Color color;
 
     /**
-     * Constructor for the Player class
-     * @param name name of the player
-     * @param id id of the player
-     * @param color color to represent on board
+     * Constructs a new Player with the given attributes.
+     *
+     * @param name  display name shown in the GUI turn label (e.g., "Player 1")
+     * @param id    numeric identifier used to mark this player's cells on the
+     *              internal board array (must be unique per game instance)
+     * @param color AWT {@link Color} used to paint this player's chips in the
+     *              board slots
      */
     public Player(String name, int id, Color color){
         this.name = name;
@@ -28,24 +36,29 @@ public class Player {
     }
 
     /**
+     * Returns the display name of this player.
      *
-     * @return name of the player
+     * @return player's name (e.g., "Player 1")
      */
     public String getName(){
         return this.name;
     }
 
     /**
+     * Returns the numeric identifier of this player.
+     * The id is stored in the board's 2-D integer array to track chip
+     * ownership for each cell.
      *
-     * @return id of the player
+     * @return player's unique integer id
      */
     public int getId(){
         return this.id;
     }
 
     /**
+     * Returns the AWT {@link Color} used to render this player's chips.
      *
-     * @return color to represent on board
+     * @return player's chip color
      */
     public Color getColor(){
         return this.color;

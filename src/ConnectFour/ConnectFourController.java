@@ -1,21 +1,38 @@
 package ConnectFour;
 
 /**
-	@author Nihar Parikh
-	ConnectFour.ConnectFourController.java
-*/
-
-/**
- * Medium of connection between view and model
- * This is the CONTROLLER of the mvc architecture
+ * Controller component of the MVC architecture for the Connect Four game.
+ *
+ * <p>{@code ConnectFourController} acts as the mediator between
+ * {@link ConnectFourView} (View) and {@link ConnectFourModel} (Model). It
+ * receives high-level user actions from the View, delegates state mutations
+ * to the Model, and instructs the View to update its presentation
+ * accordingly.</p>
+ *
+ * <p>By wiring the View and Model through this Controller, neither component
+ * needs a direct reference to the other's concrete implementation, preserving
+ * the separation of concerns central to MVC.</p>
+ *
+ * <p><b>Lifecycle:</b> Instantiating this class automatically creates a
+ * {@link ConnectFourView} and registers it as an observer with the Model so
+ * the GUI is ready to display game state immediately.</p>
+ *
+ * @see ConnectFourControllerInterface
+ * @see ConnectFourModel
+ * @see ConnectFourView
  */
 public class ConnectFourController implements ConnectFourControllerInterface {
     private ConnectFourModelInterface model;
     private ConnectFourView view;
 
     /**
-     * Constructor of the ConnectFourController class
-     * @param model connect four model
+     * Constructs a {@code ConnectFourController} and initializes the View.
+     *
+     * <p>The View is created and bound to both the provided Model and this
+     * Controller. The View registers itself as an observer on the Model so it
+     * will be notified of all subsequent game-state changes.</p>
+     *
+     * @param model the game Model; must not be {@code null}
      */
     public ConnectFourController(ConnectFourModelInterface model){
         this.model = model;
@@ -23,9 +40,15 @@ public class ConnectFourController implements ConnectFourControllerInterface {
     }
 
     /**
-     * Call model to drop chip in data
-     * Call view to drop chip visually
-     * @param column index of the column
+     * Drops a chip into the specified column for the current player.
+     *
+     * <p>Delegates the state mutation to the Model (which validates placement,
+     * updates the board array, and notifies observers), then tells the View to
+     * update the turn label for the next player.</p>
+     *
+     * @param column zero-based column index (0 to totalColumns - 1) into which
+     *               the chip is dropped; the View ensures only valid, non-full
+     *               columns can be selected
      */
     @Override
     public void dropChip(int column) {
@@ -34,7 +57,8 @@ public class ConnectFourController implements ConnectFourControllerInterface {
     }
 
     /**
-     * Call model to exit the game
+     * Exits the application by delegating to the Model's exit routine, which
+     * calls {@link System#exit(int)} with status {@code 0}.
      */
     @Override
     public void exit() {
@@ -42,8 +66,12 @@ public class ConnectFourController implements ConnectFourControllerInterface {
     }
 
     /**
-     * Call model to reset the game data
-     * Call view to reset the game visually
+     * Resets the game to its initial state.
+     *
+     * <p>Delegates Model data reset (board cleared, current player set to
+     * Player 1, available slots restored) to the Model, and then delegates
+     * the visual reset (chip colors cleared, buttons re-enabled, turn label
+     * updated) to the View.</p>
      */
     @Override
     public void reset() {
