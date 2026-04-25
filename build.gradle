@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.connectfour'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'ConnectFour.ConnectFourView'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'ConnectFour.ConnectFourView'
+    }
+    archiveFileName = 'connect-four.jar'
+}
