@@ -1,18 +1,17 @@
-package ConnectFour;
+package connectfour.controller;
 
 /**
  * Defines the contract for the Controller layer in the MVC architecture.
  *
- * <p>The Controller mediates between the {@link ConnectFourView} (View) and
- * {@link ConnectFourModel} (Model). It exposes only the actions that the View
- * is allowed to trigger, keeping the View decoupled from Model internals.</p>
+ * <p>The Controller mediates between the View and the Model. It exposes only
+ * the actions that the View is allowed to trigger, keeping the View decoupled
+ * from Model internals.</p>
  *
  * <p>Programming to this interface rather than to the concrete
  * {@link ConnectFourController} class makes it straightforward to substitute
  * alternative controller implementations (e.g., for AI players or testing).</p>
  *
  * @see ConnectFourController
- * @see ConnectFourModelInterface
  */
 public interface ConnectFourControllerInterface {
 
@@ -39,3 +38,4 @@ public interface ConnectFourControllerInterface {
      */
     void reset();
 }
+

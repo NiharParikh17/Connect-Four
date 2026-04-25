@@ -61,7 +61,7 @@ Two observer interfaces decouple the Model from the View:
 ```
 Connect-Four/
 └── src/
-    └── ConnectFour/
+    └── connectfour/
         ├── ConnectFourModel.java            # Game logic & state (Model)
         ├── ConnectFourModelInterface.java   # Model contract/interface
         ├── ConnectFourView.java             # Swing GUI (View) + main entry point
@@ -86,7 +86,7 @@ Connect-Four/
 2. **Open the project** in IntelliJ IDEA (`File → Open → select the Connect-Four folder`). IntelliJ will automatically detect the Gradle build file.
 
 3. **Run the application:**
-   - Navigate to `src/ConnectFour/ConnectFourView.java`.
+   - Navigate to `src/connectfour/view/ConnectFourView.java`.
    - Click the green **▶ Run** button next to the `main` method, or right-click the file and select **Run 'ConnectFourView.main()'**.
    - Alternatively, use the Gradle tool window and run the `run` task.
 
@@ -117,18 +117,8 @@ Connect-Four/
 
 The project currently does not include a dedicated test suite. To add unit tests:
 
-1. Add [JUnit 5](https://junit.org/junit5/) as a dependency in `build.gradle`:
-   ```groovy
-   dependencies {
-       testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
-   }
-   test {
-       useJUnitPlatform()
-   }
-   ```
-2. Create a `src/test/java/ConnectFour/` directory.
-3. Write test classes targeting `ConnectFourModel` for win-detection logic, board state management, and player switching.
-4. Run tests with:
+1. Write test classes targeting `ConnectFourModel` for win-detection logic, board state management, and player switching.
+2. Run tests with:
    ```bash
    ./gradlew test
    ```

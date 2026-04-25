@@ -1,13 +1,15 @@
-package ConnectFour;
+package connectfour.controller;
+
+import connectfour.model.ConnectFourModelInterface;
+import connectfour.view.ConnectFourView;
 
 /**
  * Controller component of the MVC architecture for the Connect Four game.
  *
  * <p>{@code ConnectFourController} acts as the mediator between
- * {@link ConnectFourView} (View) and {@link ConnectFourModel} (Model). It
- * receives high-level user actions from the View, delegates state mutations
- * to the Model, and instructs the View to update its presentation
- * accordingly.</p>
+ * the View and the Model. It receives high-level user actions from the View,
+ * delegates state mutations to the Model, and instructs the View to update
+ * its presentation accordingly.</p>
  *
  * <p>By wiring the View and Model through this Controller, neither component
  * needs a direct reference to the other's concrete implementation, preserving
@@ -18,8 +20,6 @@ package ConnectFour;
  * the GUI is ready to display game state immediately.</p>
  *
  * @see ConnectFourControllerInterface
- * @see ConnectFourModel
- * @see ConnectFourView
  */
 public class ConnectFourController implements ConnectFourControllerInterface {
     private ConnectFourModelInterface model;
@@ -79,3 +79,4 @@ public class ConnectFourController implements ConnectFourControllerInterface {
         view.resetView();
     }
 }
+
