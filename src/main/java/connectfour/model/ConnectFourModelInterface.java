@@ -2,8 +2,7 @@ package connectfour.model;
 
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
-
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Defines the contract for the Model layer in the MVC architecture.
