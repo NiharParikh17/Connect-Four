@@ -168,7 +168,7 @@ public class ConnectFourView
 
     /**
      * Resets the entire visual state of the board back to its initial
-     * appearance:
+     * appearance.
      * <ul>
      *   <li>Clears the background color of every slot panel.</li>
      *   <li>Re-enables all "Drop" buttons (including any that were disabled
