@@ -2,6 +2,7 @@ package connectfour.controller;
 
 import connectfour.model.ConnectFourModelInterface;
 import connectfour.view.ConnectFourView;
+import lombok.AllArgsConstructor;
 
 /**
  * Controller component of the MVC architecture for the Connect Four game.
@@ -21,6 +22,7 @@ import connectfour.view.ConnectFourView;
  *
  * @see ConnectFourControllerInterface
  */
+@AllArgsConstructor
 public class ConnectFourController implements ConnectFourControllerInterface {
     private final ConnectFourModelInterface model;
     private final ConnectFourView view;
