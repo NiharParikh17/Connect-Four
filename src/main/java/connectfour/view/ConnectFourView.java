@@ -7,10 +7,16 @@ import connectfour.model.ConnectFourModelInterface;
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  * View component of the MVC architecture for the Connect Four game.
