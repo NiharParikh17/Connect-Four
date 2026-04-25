@@ -36,7 +36,7 @@ public class ConnectFourController implements ConnectFourControllerInterface {
      *
      * @param model the game Model; must not be {@code null}
      */
-    public ConnectFourController(ConnectFourModelInterface model){
+    public ConnectFourController(ConnectFourModelInterface model) {
         this.model = model;
         view = new ConnectFourView(model, this);
     }

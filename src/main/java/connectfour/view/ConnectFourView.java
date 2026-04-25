@@ -75,7 +75,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * @param controller the Controller that processes user actions; must not
      *                   be {@code null}
      */
-    public ConnectFourView(ConnectFourModelInterface model, ConnectFourControllerInterface controller){
+    public ConnectFourView(ConnectFourModelInterface model, ConnectFourControllerInterface controller) {
         super();
         this.model = model;
         this.controller = controller;
@@ -89,7 +89,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     /**
      * Configures top-level frame properties and assembles the main panel.
      */
-    private void buildView(){
+    private void buildView() {
         setTitle("Connect Four");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         buildMainPanel();
@@ -100,7 +100,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * Creates the main {@link BorderLayout} panel and attaches the three
      * sub-panels: info (NORTH), game (CENTER), and operations (SOUTH).
      */
-    private void buildMainPanel(){
+    private void buildMainPanel() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -116,7 +116,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * Builds the info panel containing the turn label initialized to the
      * current player's name.
      */
-    private void buildInfoPanel(){
+    private void buildInfoPanel() {
         infoPanel = new JPanel();
 
         currentPlayer = new JLabel("Turn: " + model.getPlayer());
@@ -128,21 +128,21 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * {@code (totalRows + 1) × totalColumns} cells. The first row contains
      * the "Drop" buttons; the remaining rows contain board slot panels.
      */
-    private void buildGamePanel(){
+    private void buildGamePanel() {
         gamePanel = new JPanel();
         gamePanel.setLayout(new GridLayout(model.getTotalRows() + 1, model.getTotalColumns()));
         //We add +1 to row for buttons row
 
         dropButtons = new JButton[model.getTotalColumns()];
-        for(int button = 0; button < dropButtons.length; button++){
+        for (int button = 0; button < dropButtons.length; button++) {
             dropButtons[button] = new JButton("Drop");
             dropButtons[button].addActionListener(this);
             gamePanel.add(dropButtons[button]);
         }
 
         slots = new JPanel[model.getTotalRows()][model.getTotalColumns()];
-        for(int row = 0; row < model.getTotalRows(); row++){
-            for(int col = 0; col < model.getTotalColumns(); col++){
+        for (int row = 0; row < model.getTotalRows(); row++) {
+            for (int col = 0; col < model.getTotalColumns(); col++) {
                 slots[row][col] = new JPanel();
                 slots[row][col].setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 gamePanel.add(slots[row][col]);
@@ -153,7 +153,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     /**
      * Builds the operation panel containing the "Exit" and "Reset" buttons.
      */
-    private void buildOperationPanel(){
+    private void buildOperationPanel() {
         operationPanel = new JPanel();
 
         exit = new JButton("Exit");
@@ -178,10 +178,10 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * <p>Called by the Controller in response to a reset action or a
      * game-over event.</p>
      */
-    public void resetView(){
+    public void resetView() {
         //Setting board empty
-        for(int row = 0; row < model.getTotalRows(); row++){
-            for(int col = 0; col < model.getTotalColumns(); col++){
+        for (int row = 0; row < model.getTotalRows(); row++) {
+            for (int col = 0; col < model.getTotalColumns(); col++) {
                 slots[row][col].setBackground(null);
             }
         }
@@ -202,7 +202,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * @param column zero-based index of the column whose button should be
      *               disabled
      */
-    void disableColumn(int column){
+    void disableColumn(int column) {
         dropButtons[column].setEnabled(false);
     }
 
@@ -214,7 +214,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * @param col   zero-based column index of the target slot
      * @param color {@link Color} of the player who just placed the chip
      */
-    void dropChipInView(int row, int col, Color color){
+    void dropChipInView(int row, int col, Color color) {
         slots[row][col].setBackground(color);
     }
 
@@ -223,7 +223,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * the next turn. Called by the Controller immediately after a chip is
      * successfully dropped.
      */
-    public void switchTurns(){
+    public void switchTurns() {
         currentPlayer.setText("Turn: " + model.getPlayer());
     }
 
@@ -233,7 +233,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      *
      * @param args command-line arguments (not used)
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         ConnectFourModelInterface model = new ConnectFourModel();
         ConnectFourControllerInterface controller = new ConnectFourController(model);
     }
@@ -252,11 +252,11 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == exit){
+        if (e.getSource() == exit) {
             controller.exit();
-        }else if(e.getSource() == reset){
+        } else if (e.getSource() == reset) {
             controller.reset();
-        }else{
+        } else {
             controller.dropChip(getDropButtonPressed(e));
         }
     }
@@ -270,9 +270,9 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      *         the source does not match any known button (should not occur
      *         under normal usage)
      */
-    private int getDropButtonPressed(ActionEvent e){
-        for(int but = 0; but < dropButtons.length; but++){
-            if(e.getSource() == dropButtons[but]){
+    private int getDropButtonPressed(ActionEvent e) {
+        for (int but = 0; but < dropButtons.length; but++) {
+            if (e.getSource() == dropButtons[but]) {
                 return but;
             }
         }
@@ -290,7 +290,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
     @Override
     public void updateGame() {
         dropChipInView(model.getCurrentRow(), model.getCurrentColumn(), model.getColor());
-        if(model.getDisableButton() != -1){
+        if (model.getDisableButton() != -1) {
             disableColumn(model.getDisableButton());
         }
     }
