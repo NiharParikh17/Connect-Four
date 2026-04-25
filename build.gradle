@@ -46,6 +46,7 @@ checkstyle {
     configFile = file("${rootDir}/configuration/checkstyle/google_checks.xml")
     ignoreFailures = false
     showViolations = true
+    maxWarnings = 0
 }
 
 checkstyleMain.reports {
