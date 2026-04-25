@@ -27,9 +27,10 @@ Connect Four is a two-player strategy game played on a **6-row × 7-column** ver
 
 | Technology | Purpose |
 |---|---|
-| **Java** (JDK 8+) | Core programming language |
+| **Java** (JDK 11+) | Core programming language |
 | **Java Swing** (`javax.swing`) | GUI framework for the game window |
 | **Java AWT** (`java.awt`) | Layout management and color handling |
+| **Gradle 9.4.1** | Build tool & dependency management |
 | **IntelliJ IDEA** | Recommended IDE |
 
 ---
@@ -82,25 +83,32 @@ Connect-Four/
    git clone https://github.com/<your-username>/Connect-Four.git
    ```
 
-2. **Open the project** in IntelliJ IDEA (`File → Open → select the Connect-Four folder`).
+2. **Open the project** in IntelliJ IDEA (`File → Open → select the Connect-Four folder`). IntelliJ will automatically detect the Gradle build file.
 
-3. **Set the JDK** if not already configured: `File → Project Structure → SDK` (JDK 8 or higher).
-
-4. **Run the application:**
+3. **Run the application:**
    - Navigate to `src/ConnectFour/ConnectFourView.java`.
    - Click the green **▶ Run** button next to the `main` method, or right-click the file and select **Run 'ConnectFourView.main()'**.
+   - Alternatively, use the Gradle tool window and run the `run` task.
 
-### Using the Command Line
+### Using the Gradle Wrapper (Command Line)
 
-1. **Compile** all source files from the project root:
+1. **Run** the application directly:
    ```bash
-   mkdir -p out
-   javac -d out src/ConnectFour/*.java
+   ./gradlew run
    ```
 
-2. **Run** the application:
+2. **Build** a standalone JAR:
    ```bash
-   java -cp out ConnectFour.ConnectFourView
+   ./gradlew jar
+   ```
+   The JAR will be output to `build/libs/connect-four.jar`. Run it with:
+   ```bash
+   java -jar build/libs/connect-four.jar
+   ```
+
+3. **Compile** only (no run):
+   ```bash
+   ./gradlew compileJava
    ```
 
 ---
@@ -109,9 +117,21 @@ Connect-Four/
 
 The project currently does not include a dedicated test suite. To add unit tests:
 
-1. Add [JUnit 5](https://junit.org/junit5/) as a dependency (via Maven, Gradle, or by adding the JAR to the classpath).
-2. Create a `test/ConnectFour/` directory mirroring the `src/` structure.
+1. Add [JUnit 5](https://junit.org/junit5/) as a dependency in `build.gradle`:
+   ```groovy
+   dependencies {
+       testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+   }
+   test {
+       useJUnitPlatform()
+   }
+   ```
+2. Create a `src/test/java/ConnectFour/` directory.
 3. Write test classes targeting `ConnectFourModel` for win-detection logic, board state management, and player switching.
+4. Run tests with:
+   ```bash
+   ./gradlew test
+   ```
 
 ---
 
