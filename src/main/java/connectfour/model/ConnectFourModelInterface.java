@@ -1,4 +1,7 @@
-package ConnectFour;
+package connectfour.model;
+
+import connectfour.observer.ConnectFourObserver;
+import connectfour.observer.WinnerObserver;
 
 import java.awt.*;
 
@@ -140,3 +143,4 @@ public interface ConnectFourModelInterface {
      */
     void removeObserver(WinnerObserver o);
 }
+

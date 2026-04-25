@@ -1,4 +1,4 @@
-package ConnectFour;
+package connectfour.observer;
 
 /**
  * Observer interface used to notify registered observers whenever the game
@@ -13,7 +13,6 @@ package ConnectFour;
  * {@link WinnerObserver} to separate game-state events from end-game events.</p>
  *
  * @see WinnerObserver
- * @see ConnectFourModelInterface#registerObserver(ConnectFourObserver)
  */
 public interface ConnectFourObserver {
 
@@ -24,3 +23,4 @@ public interface ConnectFourObserver {
      */
     void updateGame();
 }
+

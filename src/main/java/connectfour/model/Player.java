@@ -1,4 +1,4 @@
-package ConnectFour;
+package connectfour.model;
 
 import java.awt.Color;
 
@@ -64,3 +64,4 @@ public class Player {
         return this.color;
     }
 }
+

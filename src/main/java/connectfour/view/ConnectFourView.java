@@ -1,4 +1,11 @@
-package ConnectFour;
+package connectfour.view;
+
+import connectfour.controller.ConnectFourController;
+import connectfour.controller.ConnectFourControllerInterface;
+import connectfour.model.ConnectFourModel;
+import connectfour.model.ConnectFourModelInterface;
+import connectfour.observer.ConnectFourObserver;
+import connectfour.observer.WinnerObserver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,9 +38,6 @@ import java.awt.event.ActionListener;
  *
  * <p>The {@code main} entry point is located in this class and bootstraps the
  * application by creating the Model and Controller.</p>
- *
- * @see ConnectFourModel
- * @see ConnectFourController
  */
 public class ConnectFourView extends JFrame implements ConnectFourObserver, WinnerObserver, ActionListener {
     private ConnectFourModelInterface model;
@@ -168,7 +172,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * <p>Called by the Controller in response to a reset action or a
      * game-over event.</p>
      */
-    void resetView(){
+    public void resetView(){
         //Setting board empty
         for(int row = 0; row < model.getTotalRows(); row++){
             for(int col = 0; col < model.getTotalColumns(); col++){
@@ -180,7 +184,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
             dropButtons[button].setEnabled(true);
         }
 
-        //Setting Current player to ConnectFour.Player 1
+        //Setting Current player to Player 1
         currentPlayer.setText("Turn: " + model.getPlayer());
     }
 
@@ -213,7 +217,7 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
      * the next turn. Called by the Controller immediately after a chip is
      * successfully dropped.
      */
-    void switchTurns(){
+    public void switchTurns(){
         currentPlayer.setText("Turn: " + model.getPlayer());
     }
 
@@ -297,3 +301,4 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
         controller.reset();
     }
 }
+

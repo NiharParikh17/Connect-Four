@@ -1,4 +1,7 @@
-package ConnectFour;
+package connectfour.model;
+
+import connectfour.observer.ConnectFourObserver;
+import connectfour.observer.WinnerObserver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +32,6 @@ import java.util.ArrayList;
  * </ul>
  *
  * @see ConnectFourModelInterface
- * @see ConnectFourController
- * @see ConnectFourView
  */
 public class ConnectFourModel implements ConnectFourModelInterface {
     /** Number of rows in the board grid. */
@@ -375,3 +376,4 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         }
     }
 }
+
