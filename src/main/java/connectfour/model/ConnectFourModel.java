@@ -2,12 +2,11 @@ package connectfour.model;
 
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
-import lombok.Getter;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JOptionPane;
+import lombok.Getter;
 
 /**
  * Model component of the MVC architecture for the Connect Four game.
@@ -77,14 +76,14 @@ public class ConnectFourModel implements ConnectFourModelInterface {
     private int disablingButton;
 
     /**
-     * Constructs a new {@code ConnectFourModel} in its initial state:
+     * Constructs a new {@code ConnectFourModel} in its initial state.
      * <ul>
      *   <li>Empty 6 × 7 board.</li>
      *   <li>Player 1 (Red) goes first.</li>
      *   <li>All columns available from the bottom row.</li>
      * </ul>
      */
-    public ConnectFourModel(){
+    public ConnectFourModel() {
         observers = new ArrayList<>();
         winObservers = new ArrayList<>();
 
@@ -93,8 +92,8 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         currentPlayer = player1;
 
         board = new int[totalRows][totalColumns];
-        for(int row = 0; row < totalRows; row++){
-            for(int col = 0; col < totalColumns; col++){
+        for (int row = 0; row < totalRows; row++) {
+            for (int col = 0; col < totalColumns; col++) {
                 board[row][col] = 0;
             }
         }
@@ -147,17 +146,17 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         currentRow = availableSpot[column];
         currentColumn = column;
         availableSpot[column]--;
-        if(availableSpot[column] < 0){
+        if (availableSpot[column] < 0) {
             disablingButton = column;
         }
         notifyGameObservers();
         disablingButton = -1;
-        if(checkWin()){
+        if (checkWin()) {
             JOptionPane.showMessageDialog(null, currentPlayer.getName() + " wins!");
             notifyWinnerObserver();
             switchPlayer();
         }
-        if(boardFull()){
+        if (boardFull()) {
             JOptionPane.showMessageDialog(null, "The game ended as draw!");
             notifyWinnerObserver();
             switchPlayer();
@@ -170,7 +169,7 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      *
      * @return {@code true} if any player has four chips in a row
      */
-    private boolean checkWin(){
+    private boolean checkWin() {
         return checkHorizontalWin() || checkVerticalWin() || checkDiagonalWin();
     }
 
@@ -179,13 +178,16 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      *
      * @return {@code true} if a horizontal four-in-a-row exists
      */
-    private boolean checkHorizontalWin(){
-        for(int row = 0; row < totalRows; row++){
-            for(int col = 0; col < totalColumns - 3; col++){
+    private boolean checkHorizontalWin() {
+        for (int row = 0; row < totalRows; row++) {
+            for (int col = 0; col < totalColumns - 3; col++) {
                 int startChip = board[row][col];
-                if(startChip != 0){
-                    if(board[row][col + 1] == startChip && board[row][col + 2] == startChip && board[row][col + 3] == startChip)
+                if (startChip != 0) {
+                    if (board[row][col + 1] == startChip
+                            && board[row][col + 2] == startChip
+                            && board[row][col + 3] == startChip) {
                         return true;
+                    }
                 }
             }
         }
@@ -197,13 +199,16 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      *
      * @return {@code true} if a vertical four-in-a-row exists
      */
-    private boolean checkVerticalWin(){
-        for(int row = 0; row < totalRows - 3; row++){
-            for(int col = 0; col < totalColumns; col++){
+    private boolean checkVerticalWin() {
+        for (int row = 0; row < totalRows - 3; row++) {
+            for (int col = 0; col < totalColumns; col++) {
                 int startChip = board[row][col];
-                if(startChip != 0){
-                    if(board[row + 1][col] == startChip && board[row + 2][col] == startChip && board[row + 3][col] == startChip)
+                if (startChip != 0) {
+                    if (board[row + 1][col] == startChip
+                            && board[row + 2][col] == startChip
+                            && board[row + 3][col] == startChip) {
                         return true;
+                    }
                 }
             }
         }
@@ -222,25 +227,31 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      * @return {@code true} if a diagonal four-in-a-row exists in either
      *         direction
      */
-    private boolean checkDiagonalWin(){
+    private boolean checkDiagonalWin() {
         //Checking left diagonal /
-        for(int row = 0; row < totalRows - 3; row++){
-            for(int col = 3; col < totalColumns; col++){
+        for (int row = 0; row < totalRows - 3; row++) {
+            for (int col = 3; col < totalColumns; col++) {
                 int startChip = board[row][col];
-                if(startChip != 0){
-                    if(board[row + 1][col - 1] == startChip && board[row + 2][col - 2] == startChip && board[row + 3][col - 3] == startChip)
+                if (startChip != 0) {
+                    if (board[row + 1][col - 1] == startChip
+                            && board[row + 2][col - 2] == startChip
+                            && board[row + 3][col - 3] == startChip) {
                         return true;
+                    }
                 }
             }
         }
 
         //Checking right diagonal \
-        for(int row = 0; row < totalRows - 3; row++){
-            for(int col = 0; col < totalColumns - 3; col++){
+        for (int row = 0; row < totalRows - 3; row++) {
+            for (int col = 0; col < totalColumns - 3; col++) {
                 int startChip = board[row][col];
-                if(startChip != 0){
-                    if(board[row + 1][col + 1] == startChip && board[row + 2][col + 2] == startChip && board[row + 3][col + 3] == startChip)
+                if (startChip != 0) {
+                    if (board[row + 1][col + 1] == startChip
+                            && board[row + 2][col + 2] == startChip
+                            && board[row + 3][col + 3] == startChip) {
                         return true;
+                    }
                 }
             }
         }
@@ -251,10 +262,10 @@ public class ConnectFourModel implements ConnectFourModelInterface {
     /**
      * Alternates the active player between Player 1 and Player 2.
      */
-    private void switchPlayer(){
-        if(currentPlayer == player1){
+    private void switchPlayer() {
+        if (currentPlayer == player1) {
             currentPlayer = player2;
-        }else if(currentPlayer == player2){
+        } else if (currentPlayer == player2) {
             currentPlayer = player1;
         }
     }
@@ -265,11 +276,14 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      * @return {@code true} if no empty ({@code 0}) cell remains, indicating
      *         a draw
      */
-    private boolean boardFull(){
-        for(int row = 0; row < totalRows; row++)
-            for(int col = 0; col < totalColumns; col++)
-                if(board[row][col] == 0)
+    private boolean boardFull() {
+        for (int row = 0; row < totalRows; row++) {
+            for (int col = 0; col < totalColumns; col++) {
+                if (board[row][col] == 0) {
                     return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -288,8 +302,8 @@ public class ConnectFourModel implements ConnectFourModelInterface {
     public void reset() {
         currentPlayer = player1;
 
-        for(int row = 0; row < totalRows; row++){
-            for(int col = 0; col < totalColumns; col++){
+        for (int row = 0; row < totalRows; row++) {
+            for (int col = 0; col < totalColumns; col++) {
                 board[row][col] = 0;
             }
         }
@@ -334,8 +348,8 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      * Notifies all registered {@link ConnectFourObserver}s that the board
      * state has changed (a chip was just placed).
      */
-    private void notifyGameObservers(){
-        for(ConnectFourObserver obs: observers){
+    private void notifyGameObservers() {
+        for (ConnectFourObserver obs : observers) {
             obs.updateGame();
         }
     }
@@ -344,8 +358,8 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      * Notifies all registered {@link WinnerObserver}s that the game has ended
      * (either by a win or a draw).
      */
-    private void notifyWinnerObserver(){
-        for(WinnerObserver obs: winObservers){
+    private void notifyWinnerObserver() {
+        for (WinnerObserver obs : winObservers) {
             obs.updateWinner();
         }
     }

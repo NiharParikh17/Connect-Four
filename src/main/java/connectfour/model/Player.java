@@ -1,9 +1,8 @@
 package connectfour.model;
 
+import java.awt.Color;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.awt.Color;
 
 /**
  * Represents a player in the Connect Four game.

@@ -1,7 +1,16 @@
 package connectfour.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
+import java.awt.Color;
+import javax.swing.JOptionPane;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,22 +21,17 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.JOptionPane;
-import java.awt.Color;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for {@link ConnectFourModel}.
- *
- * <p>The suite covers initial state, chip placement, player switching,
- * observer notifications (per-turn and end-game), win detection in every
- * direction, column-fill disabling, and reset behaviour.</p>
- *
- * <p>{@link JOptionPane} static calls are intercepted with
- * {@code MockedStatic} so that win / draw tests never block on a dialog.</p>
- */
+  * Unit tests for {@link ConnectFourModel}.
+  *
+  * <p>The suite covers initial state, chip placement, player switching,
+  * observer notifications (per-turn and end-game), win detection in every
+  * direction, column-fill disabling, and reset behaviour.</p>
+  *
+  * <p>{@link JOptionPane} static calls are intercepted with
+  * {@code MockedStatic} so that win / draw tests never block on a dialog.</p>
+  */
 @ExtendWith(MockitoExtension.class)
 class ConnectFourModelTest {
 
@@ -237,9 +241,12 @@ class ConnectFourModelTest {
             model.removeObserver(mockWinnerObserver);
 
             // Build a horizontal win for Player 1 (P1 drops cols 0-3, P2 fills col 6)
-            model.dropChip(0); model.dropChip(6);
-            model.dropChip(1); model.dropChip(6);
-            model.dropChip(2); model.dropChip(6);
+            model.dropChip(0);
+            model.dropChip(6);
+            model.dropChip(1);
+            model.dropChip(6);
+            model.dropChip(2);
+            model.dropChip(6);
             model.dropChip(3); // P1 wins
 
             verify(mockWinnerObserver, never()).updateWinner();
@@ -251,13 +258,14 @@ class ConnectFourModelTest {
     // =========================================================================
 
     @Test
-    @DisplayName("getDisableButton: returns the column index during the notification when a column becomes full")
+    @DisplayName("getDisableButton: returns column index during notification when column is full")
     void getDisableButton_returnsColumnIndexWhenColumnFull() {
         ConnectFourModel localModel = new ConnectFourModel();
         int[] captured = {-999};
 
         // Register an observer that records the value while still inside the notification
-        localModel.registerObserver((ConnectFourObserver) () -> captured[0] = localModel.getDisableButton());
+        localModel.registerObserver(
+                (ConnectFourObserver) () -> captured[0] = localModel.getDisableButton());
 
         // Drop 6 chips consecutively into col 0.
         // Each dropChip switches the active player, so the column fills with
@@ -267,7 +275,8 @@ class ConnectFourModelTest {
         }
 
         assertEquals(0, captured[0],
-                "getDisableButton should equal 0 during the notification for the move that fills column 0");
+                "getDisableButton should equal 0 during the notification"
+                    + " for the move that fills column 0");
     }
 
     @Test
@@ -293,10 +302,13 @@ class ConnectFourModelTest {
             model.registerObserver(mockWinnerObserver);
 
             // P1 fills row 5, cols 0-3; P2 occupies col 6 as filler
-            model.dropChip(0); model.dropChip(6); // T1 P1, T2 P2
-            model.dropChip(1); model.dropChip(6); // T3 P1, T4 P2
-            model.dropChip(2); model.dropChip(6); // T5 P1, T6 P2
-            model.dropChip(3);                    // T7 P1 — horizontal win: (5,0)-(5,1)-(5,2)-(5,3)
+            model.dropChip(0); // T1 P1
+            model.dropChip(6); // T2 P2
+            model.dropChip(1); // T3 P1
+            model.dropChip(6); // T4 P2
+            model.dropChip(2); // T5 P1
+            model.dropChip(6); // T6 P2
+            model.dropChip(3); // T7 P1 — horizontal win: (5,0)-(5,1)-(5,2)-(5,3)
 
             verify(mockWinnerObserver).updateWinner();
         }
@@ -306,9 +318,12 @@ class ConnectFourModelTest {
     @DisplayName("dropChip: shows a win dialog when a horizontal win is detected")
     void dropChip_showsDialogOnHorizontalWin() {
         try (MockedStatic<JOptionPane> mockedPane = mockStatic(JOptionPane.class)) {
-            model.dropChip(0); model.dropChip(6);
-            model.dropChip(1); model.dropChip(6);
-            model.dropChip(2); model.dropChip(6);
+            model.dropChip(0);
+            model.dropChip(6);
+            model.dropChip(1);
+            model.dropChip(6);
+            model.dropChip(2);
+            model.dropChip(6);
             model.dropChip(3); // P1 wins
 
             mockedPane.verify(() ->
@@ -327,10 +342,13 @@ class ConnectFourModelTest {
             model.registerObserver(mockWinnerObserver);
 
             // P1 drops in col 0 four times; P2 uses col 1 as filler
-            model.dropChip(0); model.dropChip(1); // T1, T2
-            model.dropChip(0); model.dropChip(1); // T3, T4
-            model.dropChip(0); model.dropChip(1); // T5, T6
-            model.dropChip(0);                    // T7 P1 — vertical win in col 0
+            model.dropChip(0);
+            model.dropChip(1); // T1, T2
+            model.dropChip(0);
+            model.dropChip(1); // T3, T4
+            model.dropChip(0);
+            model.dropChip(1); // T5, T6
+            model.dropChip(0); // T7 P1 — vertical win in col 0
 
             verify(mockWinnerObserver).updateWinner();
         }
@@ -355,12 +373,17 @@ class ConnectFourModelTest {
         try (MockedStatic<JOptionPane> ignored = mockStatic(JOptionPane.class)) {
             model.registerObserver(mockWinnerObserver);
 
-            model.dropChip(0); model.dropChip(1); // T1  T2
-            model.dropChip(2); model.dropChip(3); // T3  T4
-            model.dropChip(1); model.dropChip(2); // T5  T6
-            model.dropChip(2); model.dropChip(6); // T7  T8
-            model.dropChip(3); model.dropChip(3); // T9  T10
-            model.dropChip(3);                    // T11 — left-diagonal win
+            model.dropChip(0);
+            model.dropChip(1); // T1  T2
+            model.dropChip(2);
+            model.dropChip(3); // T3  T4
+            model.dropChip(1);
+            model.dropChip(2); // T5  T6
+            model.dropChip(2);
+            model.dropChip(6); // T7  T8
+            model.dropChip(3);
+            model.dropChip(3); // T9  T10
+            model.dropChip(3); // T11 — left-diagonal win
 
             verify(mockWinnerObserver).updateWinner();
         }
@@ -385,12 +408,17 @@ class ConnectFourModelTest {
         try (MockedStatic<JOptionPane> ignored = mockStatic(JOptionPane.class)) {
             model.registerObserver(mockWinnerObserver);
 
-            model.dropChip(3); model.dropChip(2); // T1  T2
-            model.dropChip(2); model.dropChip(0); // T3  T4
-            model.dropChip(1); model.dropChip(1); // T5  T6
-            model.dropChip(1); model.dropChip(6); // T7  T8
-            model.dropChip(0); model.dropChip(0); // T9  T10
-            model.dropChip(0);                    // T11 — right-diagonal win
+            model.dropChip(3);
+            model.dropChip(2); // T1  T2
+            model.dropChip(2);
+            model.dropChip(0); // T3  T4
+            model.dropChip(1);
+            model.dropChip(1); // T5  T6
+            model.dropChip(1);
+            model.dropChip(6); // T7  T8
+            model.dropChip(0);
+            model.dropChip(0); // T9  T10
+            model.dropChip(0); // T11 — right-diagonal win
 
             verify(mockWinnerObserver).updateWinner();
         }
@@ -401,14 +429,17 @@ class ConnectFourModelTest {
     // =========================================================================
 
     @Test
-    @DisplayName("getPlayer: returns Player 1 after Player 1 wins (double switchPlayer resets to P1)")
+    @DisplayName("getPlayer: returns P1 after P1 wins (double switchPlayer resets to P1)")
     void getPlayer_returnsPlayer1AfterPlayer1Wins() {
         try (MockedStatic<JOptionPane> ignored = mockStatic(JOptionPane.class)) {
             // P1 wins horizontally; inside dropChip the win branch calls switchPlayer
             // once, and the unconditional call at the end calls it again → net P1
-            model.dropChip(0); model.dropChip(6);
-            model.dropChip(1); model.dropChip(6);
-            model.dropChip(2); model.dropChip(6);
+            model.dropChip(0);
+            model.dropChip(6);
+            model.dropChip(1);
+            model.dropChip(6);
+            model.dropChip(2);
+            model.dropChip(6);
             model.dropChip(3); // P1 wins
 
             assertEquals("Player 1", model.getPlayer());
@@ -427,9 +458,12 @@ class ConnectFourModelTest {
             model.registerObserver(mockWinnerObserver);
             model.registerObserver(second);
 
-            model.dropChip(0); model.dropChip(6);
-            model.dropChip(1); model.dropChip(6);
-            model.dropChip(2); model.dropChip(6);
+            model.dropChip(0);
+            model.dropChip(6);
+            model.dropChip(1);
+            model.dropChip(6);
+            model.dropChip(2);
+            model.dropChip(6);
             model.dropChip(3); // P1 wins
 
             verify(mockWinnerObserver).updateWinner();
@@ -474,11 +508,13 @@ class ConnectFourModelTest {
     }
 
     @Test
-    @DisplayName("reset: all columns are available again after reset (chip lands at row 5 in every column)")
+    @DisplayName("reset: all columns available after reset (chip lands at row 5 in every column)")
     void reset_allColumnsAvailableAfterReset() {
         // Partially fill a few columns, then reset
-        model.dropChip(0); model.dropChip(1);
-        model.dropChip(2); model.dropChip(3);
+        model.dropChip(0);
+        model.dropChip(1);
+        model.dropChip(2);
+        model.dropChip(3);
         model.reset();
 
         for (int col = 0; col < model.getTotalColumns(); col++) {
@@ -493,7 +529,7 @@ class ConnectFourModelTest {
     // =========================================================================
 
     @Test
-    @DisplayName("dropChip: WinnerObserver is never called during a sequence of normal (non-winning) moves")
+    @DisplayName("dropChip: WinnerObserver never called during normal (non-winning) moves")
     void dropChip_winnerObserverNeverCalledDuringNormalPlay() {
         model.registerObserver(mockWinnerObserver);
 
@@ -506,9 +542,6 @@ class ConnectFourModelTest {
         verify(mockWinnerObserver, never()).updateWinner();
     }
 }
-
-
-
 
 
 

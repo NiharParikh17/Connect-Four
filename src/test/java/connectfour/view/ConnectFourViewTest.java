@@ -1,10 +1,29 @@
 package connectfour.view;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import connectfour.controller.ConnectFourControllerInterface;
 import connectfour.model.ConnectFourModelInterface;
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
-import org.junit.jupiter.api.*;
+import java.awt.Color;
+import java.lang.reflect.Field;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,29 +32,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import javax.swing.*;
-import java.awt.*;
-import java.lang.reflect.Field;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for {@link ConnectFourView}.
- *
- * <p>Both the {@link ConnectFourModelInterface} and
- * {@link ConnectFourControllerInterface} are mocked so no live game logic
- * runs and no {@link JOptionPane} dialog can block the test.</p>
- *
- * <p>All Swing operations are dispatched on the Event Dispatch Thread via
- * {@link SwingUtilities#invokeAndWait} to keep the tests thread-safe. The
- * frame is hidden immediately after construction and disposed in
- * {@code @AfterEach}.</p>
- *
- * <p>Private Swing fields ({@code slots}, {@code dropButtons}, etc.) are
- * accessed through reflection so that internal state can be asserted without
- * changing the production API.</p>
- */
+  * Unit tests for {@link ConnectFourView}.
+  *
+  * <p>Both the {@link ConnectFourModelInterface} and
+  * {@link ConnectFourControllerInterface} are mocked so no live game logic
+  * runs and no {@link javax.swing.JOptionPane} dialog can block the test.</p>
+  *
+  * <p>All Swing operations are dispatched on the Event Dispatch Thread via
+  * {@link SwingUtilities#invokeAndWait} to keep the tests thread-safe. The
+  * frame is hidden immediately after construction and disposed in
+  * {@code @AfterEach}.</p>
+  *
+  * <p>Private Swing fields ({@code slots}, {@code dropButtons}, etc.) are
+  * accessed through reflection so that internal state can be asserted without
+  * changing the production API.</p>
+  */
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class ConnectFourViewTest {
@@ -80,9 +93,9 @@ class ConnectFourViewTest {
     // -------------------------------------------------------------------------
 
     /**
-     * Returns the value of the named {@code private} field from the view under
-     * test.
-     */
+      * Returns the value of the named {@code private} field from the view under
+      * test.
+      */
     @SuppressWarnings("unchecked")
     private <T> T field(String name) throws Exception {
         Field f = ConnectFourView.class.getDeclaredField(name);
@@ -214,9 +227,9 @@ class ConnectFourViewTest {
         });
 
         JPanel[][] slots = field("slots");
-        assertEquals(Color.RED,   slots[5][0].getBackground());
+        assertEquals(Color.RED, slots[5][0].getBackground());
         assertEquals(Color.YELLOW, slots[5][1].getBackground());
-        assertEquals(Color.RED,   slots[4][0].getBackground());
+        assertEquals(Color.RED, slots[4][0].getBackground());
     }
 
     // =========================================================================
@@ -310,7 +323,7 @@ class ConnectFourViewTest {
         });
 
         JButton[] dropButtons = field("dropButtons");
-        JPanel[][]  slots      = field("slots");
+        JPanel[][] slots = field("slots");
         for (JButton btn : dropButtons) {
             assertTrue(btn.isEnabled());
         }
@@ -443,7 +456,7 @@ class ConnectFourViewTest {
 
     @ParameterizedTest(name = "Drop button col {0}: delegates to controller.dropChip({0})")
     @ValueSource(ints = {0, 1, 2, 3, 4, 5, 6})
-    @DisplayName("Drop button click: delegates to controller.dropChip with the correct column index")
+    @DisplayName("Drop button click: delegates to controller.dropChip with the correct column")
     void dropButton_click_callsControllerDropChipWithCorrectColumn(int col) throws Exception {
         JButton[] dropButtons = field("dropButtons");
 
