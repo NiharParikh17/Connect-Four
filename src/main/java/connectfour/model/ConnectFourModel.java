@@ -2,6 +2,7 @@ package connectfour.model;
 
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,8 +36,10 @@ import java.util.ArrayList;
  */
 public class ConnectFourModel implements ConnectFourModelInterface {
     /** Number of rows in the board grid. */
+    @Getter
     private final int totalRows = 6;
     /** Number of columns in the board grid. */
+    @Getter
     private final int totalColumns = 7;
 
     private ArrayList<ConnectFourObserver> observers;
@@ -60,8 +63,10 @@ public class ConnectFourModel implements ConnectFourModelInterface {
     private int[] availableSpot;
 
     /** Row of the most recently placed chip (set during {@link #dropChip}). */
+    @Getter
     private int currentRow;
     /** Column of the most recently placed chip (set during {@link #dropChip}). */
+    @Getter
     private int currentColumn;
 
     /**
@@ -101,21 +106,6 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         disablingButton = -1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTotalRows() {
-        return totalRows;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTotalColumns() {
-        return totalColumns;
-    }
 
     /**
      * {@inheritDoc}
@@ -125,21 +115,6 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         return currentPlayer.getName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getCurrentRow() {
-        return currentRow;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getCurrentColumn() {
-        return currentColumn;
-    }
 
     /**
      * {@inheritDoc}
