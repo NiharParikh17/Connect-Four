@@ -7,6 +7,7 @@ import lombok.Getter;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Model component of the MVC architecture for the Connect Four game.
@@ -42,25 +43,25 @@ public class ConnectFourModel implements ConnectFourModelInterface {
     @Getter
     private final int totalColumns = 7;
 
-    private ArrayList<ConnectFourObserver> observers;
-    private ArrayList<WinnerObserver> winObservers;
+    private final ArrayList<ConnectFourObserver> observers;
+    private final ArrayList<WinnerObserver> winObservers;
 
-    private Player player1;
-    private Player player2;
+    private final Player player1;
+    private final Player player2;
     private Player currentPlayer;
 
     /**
      * 2-D board array. Each cell stores the id of the player who occupies it,
      * or {@code 0} if empty.
      */
-    private int[][] board;
+    private final int[][] board;
 
     /**
      * Tracks the lowest available (unfilled) row index for each column.
      * Starts at {@code totalRows - 1} and decrements as chips are dropped.
      * When a value drops below {@code 0} the column is full.
      */
-    private int[] availableSpot;
+    private final int[] availableSpot;
 
     /** Row of the most recently placed chip (set during {@link #dropChip}). */
     @Getter
@@ -99,9 +100,8 @@ public class ConnectFourModel implements ConnectFourModelInterface {
         }
 
         availableSpot = new int[totalColumns];
-        for(int col = 0; col < availableSpot.length; col++){
-            availableSpot[col] = totalRows - 1; //We do -1 because it starts with 0 and not 1
-        }
+        //We do -1 because it starts with 0 and not 1
+        Arrays.fill(availableSpot, totalRows - 1);
 
         disablingButton = -1;
     }
@@ -294,9 +294,8 @@ public class ConnectFourModel implements ConnectFourModelInterface {
             }
         }
 
-        for(int col = 0; col < availableSpot.length; col++){
-            availableSpot[col] = totalRows - 1; //We do -1 because it starts with 0 and not 1
-        }
+        //We do -1 because it starts with 0 and not 1
+        Arrays.fill(availableSpot, totalRows - 1);
     }
 
     /**

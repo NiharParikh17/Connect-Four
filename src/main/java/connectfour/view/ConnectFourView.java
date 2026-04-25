@@ -40,8 +40,8 @@ import java.awt.event.ActionListener;
  * application by creating the Model and Controller.</p>
  */
 public class ConnectFourView extends JFrame implements ConnectFourObserver, WinnerObserver, ActionListener {
-    private ConnectFourModelInterface model;
-    private ConnectFourControllerInterface controller;
+    private final ConnectFourModelInterface model;
+    private final ConnectFourControllerInterface controller;
 
     private JPanel mainPanel;
 
@@ -180,8 +180,8 @@ public class ConnectFourView extends JFrame implements ConnectFourObserver, Winn
             }
         }
         //Enabling buttons
-        for(int button = 0; button < dropButtons.length; button++){
-            dropButtons[button].setEnabled(true);
+        for (JButton dropButton : dropButtons) {
+            dropButton.setEnabled(true);
         }
 
         //Setting Current player to Player 1
