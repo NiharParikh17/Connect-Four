@@ -76,7 +76,7 @@ public class ConnectFourModel implements ConnectFourModelInterface {
     private int disablingButton;
 
     /**
-     * Constructs a new {@code ConnectFourModel} in its initial state:
+     * Constructs a new {@code ConnectFourModel} in its initial state.
      * <ul>
      *   <li>Empty 6 × 7 board.</li>
      *   <li>Player 1 (Red) goes first.</li>
