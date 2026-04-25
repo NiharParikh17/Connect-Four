@@ -4,10 +4,10 @@ import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
 import lombok.Getter;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JOptionPane;
 
 /**
  * Model component of the MVC architecture for the Connect Four game.
