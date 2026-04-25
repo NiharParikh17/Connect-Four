@@ -2,12 +2,11 @@ package connectfour.model;
 
 import connectfour.observer.ConnectFourObserver;
 import connectfour.observer.WinnerObserver;
-import lombok.Getter;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
+import lombok.Getter;
 
 /**
  * Model component of the MVC architecture for the Connect Four game.
@@ -184,8 +183,11 @@ public class ConnectFourModel implements ConnectFourModelInterface {
             for (int col = 0; col < totalColumns - 3; col++) {
                 int startChip = board[row][col];
                 if (startChip != 0) {
-                    if (board[row][col + 1] == startChip && board[row][col + 2] == startChip && board[row][col + 3] == startChip)
+                    if (board[row][col + 1] == startChip
+                            && board[row][col + 2] == startChip
+                            && board[row][col + 3] == startChip) {
                         return true;
+                    }
                 }
             }
         }
@@ -202,8 +204,11 @@ public class ConnectFourModel implements ConnectFourModelInterface {
             for (int col = 0; col < totalColumns; col++) {
                 int startChip = board[row][col];
                 if (startChip != 0) {
-                    if (board[row + 1][col] == startChip && board[row + 2][col] == startChip && board[row + 3][col] == startChip)
+                    if (board[row + 1][col] == startChip
+                            && board[row + 2][col] == startChip
+                            && board[row + 3][col] == startChip) {
                         return true;
+                    }
                 }
             }
         }
@@ -228,8 +233,11 @@ public class ConnectFourModel implements ConnectFourModelInterface {
             for (int col = 3; col < totalColumns; col++) {
                 int startChip = board[row][col];
                 if (startChip != 0) {
-                    if (board[row + 1][col - 1] == startChip && board[row + 2][col - 2] == startChip && board[row + 3][col - 3] == startChip)
+                    if (board[row + 1][col - 1] == startChip
+                            && board[row + 2][col - 2] == startChip
+                            && board[row + 3][col - 3] == startChip) {
                         return true;
+                    }
                 }
             }
         }
@@ -239,8 +247,11 @@ public class ConnectFourModel implements ConnectFourModelInterface {
             for (int col = 0; col < totalColumns - 3; col++) {
                 int startChip = board[row][col];
                 if (startChip != 0) {
-                    if (board[row + 1][col + 1] == startChip && board[row + 2][col + 2] == startChip && board[row + 3][col + 3] == startChip)
+                    if (board[row + 1][col + 1] == startChip
+                            && board[row + 2][col + 2] == startChip
+                            && board[row + 3][col + 3] == startChip) {
                         return true;
+                    }
                 }
             }
         }
@@ -266,11 +277,13 @@ public class ConnectFourModel implements ConnectFourModelInterface {
      *         a draw
      */
     private boolean boardFull() {
-        for (int row = 0; row < totalRows; row++)
-            for (int col = 0; col < totalColumns; col++)
+        for (int row = 0; row < totalRows; row++) {
+            for (int col = 0; col < totalColumns; col++) {
                 if (board[row][col] == 0) {
                     return false;
                 }
+            }
+        }
         return true;
     }
 
