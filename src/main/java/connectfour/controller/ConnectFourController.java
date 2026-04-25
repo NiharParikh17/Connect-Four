@@ -22,8 +22,8 @@ import connectfour.view.ConnectFourView;
  * @see ConnectFourControllerInterface
  */
 public class ConnectFourController implements ConnectFourControllerInterface {
-    private ConnectFourModelInterface model;
-    private ConnectFourView view;
+    private final ConnectFourModelInterface model;
+    private final ConnectFourView view;
 
     /**
      * Constructs a {@code ConnectFourController} and initializes the View.
