@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
 }
 
 group = 'com.connectfour'
@@ -39,3 +40,21 @@ jar {
     }
     archiveFileName = 'connect-four.jar'
 }
+
+checkstyle {
+    toolVersion = '10.21.4'
+    configFile = file("${rootDir}/configuration/checkstyle/google_checks.xml")
+    ignoreFailures = true
+    showViolations = true
+}
+
+checkstyleMain.reports {
+    html.required = true
+    xml.required = true
+}
+
+checkstyleTest.reports {
+    html.required = true
+    xml.required = true
+}
+
