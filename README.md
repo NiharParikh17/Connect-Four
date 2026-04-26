@@ -12,6 +12,7 @@ A classic two-player **Connect Four** board game built in Java with a graphical 
 - [Project Structure](#project-structure)
 - [How to Run](#how-to-run)
 - [How to Run Tests](#how-to-run-tests)
+- [Code Style (Checkstyle)](#code-style-checkstyle)
 - [Gameplay](#gameplay)
 - [Author](#author)
 
@@ -27,10 +28,14 @@ Connect Four is a two-player strategy game played on a **6-row × 7-column** ver
 
 | Technology | Purpose |
 |---|---|
-| **Java** (JDK 11+) | Core programming language |
+| **Java** (JDK 21) | Core programming language |
 | **Java Swing** (`javax.swing`) | GUI framework for the game window |
 | **Java AWT** (`java.awt`) | Layout management and color handling |
-| **Gradle 9.4.1** | Build tool & dependency management |
+| **Lombok** | Boilerplate reduction (`@Getter`, `@AllArgsConstructor`) |
+| **Gradle** | Build tool & dependency management |
+| **JUnit Jupiter** | Unit testing framework |
+| **Mockito** | Mocking framework for isolated unit tests |
+| **Checkstyle** | Static analysis enforcing Google Java Style |
 | **IntelliJ IDEA** | Recommended IDE |
 
 ---
@@ -60,16 +65,34 @@ Two observer interfaces decouple the Model from the View:
 
 ```
 Connect-Four/
+├── configuration/
+│   └── checkstyle/
+│       └── google_checks.xml        # Checkstyle ruleset
 └── src/
-    └── connectfour/
-        ├── ConnectFourModel.java            # Game logic & state (Model)
-        ├── ConnectFourModelInterface.java   # Model contract/interface
-        ├── ConnectFourView.java             # Swing GUI (View) + main entry point
-        ├── ConnectFourController.java       # Coordinator (Controller)
-        ├── ConnectFourControllerInterface.java # Controller contract/interface
-        ├── ConnectFourObserver.java         # Observer interface for game updates
-        ├── WinnerObserver.java              # Observer interface for win/draw events
-        └── Player.java                      # Player data (name, id, color)
+    ├── main/
+    │   └── java/
+    │       └── connectfour/
+    │           ├── controller/
+    │           │   ├── ConnectFourController.java           # Controller implementation
+    │           │   └── ConnectFourControllerInterface.java  # Controller contract
+    │           ├── model/
+    │           │   ├── ConnectFourModel.java                # Game logic & state (Model)
+    │           │   ├── ConnectFourModelInterface.java       # Model contract
+    │           │   └── Player.java                         # Player data (name, id, color)
+    │           ├── observer/
+    │           │   ├── ConnectFourObserver.java             # Observer interface (per-turn)
+    │           │   └── WinnerObserver.java                  # Observer interface (end-game)
+    │           └── view/
+    │               └── ConnectFourView.java                 # Swing GUI (View) + main entry point
+    └── test/
+        └── java/
+            └── connectfour/
+                ├── controller/
+                │   └── ConnectFourControllerTest.java       # Controller unit tests
+                ├── model/
+                │   └── ConnectFourModelTest.java            # Model unit tests
+                └── view/
+                    └── ConnectFourViewTest.java             # View unit tests
 ```
 
 ---
@@ -86,7 +109,7 @@ Connect-Four/
 2. **Open the project** in IntelliJ IDEA (`File → Open → select the Connect-Four folder`). IntelliJ will automatically detect the Gradle build file.
 
 3. **Run the application:**
-   - Navigate to `src/connectfour/view/ConnectFourView.java`.
+   - Navigate to `src/main/java/connectfour/view/ConnectFourView.java`.
    - Click the green **▶ Run** button next to the `main` method, or right-click the file and select **Run 'ConnectFourView.main()'**.
    - Alternatively, use the Gradle tool window and run the `run` task.
 
@@ -106,7 +129,13 @@ Connect-Four/
    java -jar build/libs/connect-four.jar
    ```
 
-3. **Compile** only (no run):
+3. **Build a distribution archive** (`.tar` / `.zip` with launch scripts):
+   ```bash
+   ./gradlew assembleDist
+   ```
+   Archives are placed in `build/distributions/`.
+
+4. **Compile** only (no run):
    ```bash
    ./gradlew compileJava
    ```
@@ -115,13 +144,43 @@ Connect-Four/
 
 ## How to Run Tests
 
-The project currently does not include a dedicated test suite. To add unit tests:
+The project has a comprehensive unit test suite covering all three MVC layers.
 
-1. Write test classes targeting `ConnectFourModel` for win-detection logic, board state management, and player switching.
-2. Run tests with:
-   ```bash
-   ./gradlew test
-   ```
+| Test Class | Tests Cover |
+|---|---|
+| `ConnectFourModelTest` | Board initialization, chip placement, player alternation, observer notifications, horizontal / vertical / diagonal win detection, draw detection, column-fill disabling, and reset |
+| `ConnectFourControllerTest` | Correct delegation order to Model and View for `dropChip`, `reset`, and `exit` |
+| `ConnectFourViewTest` | Observer registration, slot painting, button enabling/disabling, `updateGame` & `updateWinner` callbacks, and all button `ActionEvent` routes |
+
+Run the full test suite with:
+```bash
+./gradlew test
+```
+
+An HTML report is generated at `build/reports/tests/test/index.html`.
+
+> **Implementation notes:**
+> - Tests use **JUnit Jupiter** with `@ParameterizedTest` and `@ValueSource` for exhaustive column coverage.
+> - **Mockito** mocks are injected via `@ExtendWith(MockitoExtension.class)` to isolate each layer.
+> - `JOptionPane` static calls are intercepted with `MockedStatic` so win/draw tests never block on a dialog.
+> - All Swing assertions run on the Event Dispatch Thread via `SwingUtilities.invokeAndWait`.
+
+---
+
+## Code Style (Checkstyle)
+
+The project enforces **Google Java Style** through Checkstyle. The ruleset is located at `configuration/checkstyle/google_checks.xml`.
+
+Run style checks manually:
+```bash
+# Check main sources
+./gradlew checkstyleMain
+
+# Check test sources
+./gradlew checkstyleTest
+```
+
+HTML and XML reports are generated under `build/reports/checkstyle/`. The build fails on any violation (`ignoreFailures = false`, `maxWarnings = 0`).
 
 ---
 
