@@ -36,7 +36,6 @@ Connect Four is a two-player strategy game played on a **6-row × 7-column** ver
 | **JUnit Jupiter** | Unit testing framework |
 | **Mockito** | Mocking framework for isolated unit tests |
 | **Checkstyle** | Static analysis enforcing Google Java Style |
-| **IntelliJ IDEA** | Recommended IDE |
 
 ---
 
@@ -99,19 +98,18 @@ Connect-Four/
 
 ## How to Run
 
-### Using IntelliJ IDEA (Recommended)
+### Using an IDE
 
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/<your-username>/Connect-Four.git
    ```
 
-2. **Open the project** in IntelliJ IDEA (`File → Open → select the Connect-Four folder`). IntelliJ will automatically detect the Gradle build file.
+2. **Open the project** in any Java IDE that supports Gradle (e.g., IntelliJ IDEA, Eclipse, VS Code). The IDE should automatically detect and import the Gradle build file.
 
 3. **Run the application:**
    - Navigate to `src/main/java/connectfour/view/ConnectFourView.java`.
-   - Click the green **▶ Run** button next to the `main` method, or right-click the file and select **Run 'ConnectFourView.main()'**.
-   - Alternatively, use the Gradle tool window and run the `run` task.
+   - Run the `main` method directly from the IDE, or use the Gradle `run` task from the IDE's Gradle tool window.
 
 ### Using the Gradle Wrapper (Command Line)
 
