@@ -28,7 +28,7 @@ import javax.swing.JPanel;
  *   <li><b>Game panel (center)</b> — a grid of "Drop" buttons (one per column)
  *       and {@link JPanel} slots representing the 6 × 7 board cells. Chip
  *       colors fill in as players take turns.</li>
- *   <li><b>Operation panel (bottom)</b> — "Reset" and "Exit" buttons.</li>
+ *   <li><b>Operation panel (bottom)</b> — "Exit" and "Reset" buttons.</li>
  * </ol>
  *
  * <p>This class implements both observer interfaces so it can react to Model
