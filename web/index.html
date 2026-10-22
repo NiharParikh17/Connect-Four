@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect Four</title>
+  <meta name="description" content="How a Java Swing Connect Four game works. Follow one winning move from the Drop button through the controller, the model's board and win scan, the observers and the reset.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://connectfour.nhparikh.com/">
+  <!-- Link previews (LinkedIn, Slack, X, ...). These URLs must be absolute. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Connect Four">
+  <meta property="og:url" content="https://connectfour.nhparikh.com/">
+  <meta property="og:title" content="Connect Four: four in a row, one click at a time">
+  <meta property="og:description" content="How a Java Swing Connect Four game works. Follow one winning move from the Drop button through the controller, the model's board and win scan, the observers and the reset.">
+  <meta property="og:image" content="https://connectfour.nhparikh.com/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="2400">
+  <meta property="og:image:height" content="1254">
+  <meta property="og:image:alt" content="Connect Four: the headline “Four in a row, one click at a time” beside a board where red has just completed a diagonal.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='5' width='26' height='22' rx='5' fill='%232149C9'/%3E%3Ccircle cx='11' cy='12' r='4' fill='%23F5BD02'/%3E%3Ccircle cx='21' cy='12' r='4' fill='%23ffffff'/%3E%3Ccircle cx='11' cy='21' r='4' fill='%23E0263C'/%3E%3Ccircle cx='21' cy='21' r='4' fill='%23E0263C'/%3E%3C/svg%3E">
+  <script>
+    (function () {
+      var theme;
+      try { theme = localStorage.getItem("connectfour-theme"); } catch (e) {}
+      if (theme !== "light" && theme !== "dark") {
+        theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Martian+Mono:wght@400..600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the explanation</a>
+
+  <header class="site-header">
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="5" width="26" height="22" rx="5" class="mark-frame"/>
+        <circle cx="11" cy="12" r="4" class="mark-p2"/>
+        <circle cx="21" cy="12" r="4" class="mark-hole"/>
+        <circle cx="11" cy="21" r="4" class="mark-p1"/>
+        <circle cx="21" cy="21" r="4" class="mark-p1"/>
+      </svg>
+      Connect Four
+    </a>
+    <nav class="site-nav" aria-label="Project links">
+      <a href="https://github.com/NiharParikh17/Connect-Four#readme">Docs</a>
+      <a href="https://github.com/NiharParikh17/Connect-Four">GitHub</a>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">Four in a row, one click at&nbsp;a&nbsp;time</h1>
+        <p class="lede">A two-player Connect Four game written in Java Swing, built on the Model-View-Controller and Observer patterns. This page follows a single click, the winning move on the board here, through every class it touches.</p>
+        <ul class="facts" aria-label="The game in numbers">
+          <li class="fact"><span class="fact-value">6 × 7</span><span class="fact-label">board</span></li>
+          <li class="fact"><span class="fact-value">4</span><span class="fact-label">in a row wins</span></li>
+          <li class="fact"><span class="fact-value">69</span><span class="fact-label">lines checked per move, at most</span></li>
+          <li class="fact"><span class="fact-value">2</span><span class="fact-label">observer interfaces</span></li>
+        </ul>
+      </div>
+
+      <figure class="hero-figure">
+        <div class="board" data-rows="......./......./....R../...Ry../..Ryr../yRyry.." data-last="2,4" role="img" aria-label="A 6 by 7 board. Red has just dropped a chip into column 4, row 2, completing a diagonal of four red chips from row 5, column 1 up to row 2, column 4."></div>
+        <figcaption>Player&nbsp;1 (red) drops a chip into column&nbsp;4 and completes a diagonal. As in the code, rows and columns count from 0 and row&nbsp;0 is the top.</figcaption>
+      </figure>
+    </section>
+
+    <div class="layout">
+      <aside class="cast" aria-labelledby="cast-title">
+        <h2 class="cast-title" id="cast-title">The three classes</h2>
+        <div class="role role-view">
+          <h3 class="role-name">View</h3>
+          <p class="role-class mono">ConnectFourView</p>
+          <p class="role-note">Draws the window and turns clicks into calls on the controller.</p>
+        </div>
+        <div class="role role-controller">
+          <h3 class="role-name">Controller</h3>
+          <p class="role-class mono">ConnectFourController</p>
+          <p class="role-note">Passes each action to the model, then tells the view what to update.</p>
+        </div>
+        <div class="role role-model">
+          <h3 class="role-name">Model</h3>
+          <p class="role-class mono">ConnectFourModel</p>
+          <p class="role-note">Owns the board and the rules, and notifies observers when they change.</p>
+        </div>
+      </aside>
+
+      <ol class="steps">
+        <li class="step step-view" id="step-click" aria-labelledby="step-click-title">
+          <h2 class="step-title" id="step-click-title"><span class="step-number" aria-hidden="true">1</span>Click Drop</h2>
+          <p class="step-owner"><span class="tag tag-view">View</span></p>
+          <p class="step-text"><code>ConnectFourView</code> is a <code>JFrame</code> with three panels: a turn label at the top, a grid in the middle with a <strong>Drop</strong> button above each column and a <code>JPanel</code> for each of the 42 slots, and <strong>Exit</strong> and <strong>Reset</strong> at the bottom. Every button reports to the same <code>actionPerformed</code> method.</p>
+
+          <div class="window" role="img" aria-label="The game window before the winning move. The label reads Turn: Player 1, the Drop button above column 4 is being clicked, and Exit and Reset buttons sit below the grid.">
+            <div class="window-bar"><span class="window-dots" aria-hidden="true"></span>Connect Four</div>
+            <p class="window-label">Turn: Player 1</p>
+            <div class="window-drops" aria-hidden="true">
+              <span>Drop</span><span>Drop</span><span>Drop</span><span>Drop</span><span class="pressed">Drop</span><span>Drop</span><span>Drop</span>
+            </div>
+            <div class="slots" data-rows="......./......./......./...ry../..ryr../yryry.."></div>
+            <div class="window-ops" aria-hidden="true"><span>Exit</span><span>Reset</span></div>
+          </div>
+
+          <p class="step-text">The method compares the event's source with each button. Exit and Reset map straight to the controller; anything else must be a Drop button, so it loops over the seven of them to find the column.</p>
+<pre class="code"><code>public void actionPerformed(ActionEvent e) {
+    if (e.getSource() == exit) {
+        controller.exit();
+    } else if (e.getSource() == reset) {
+        controller.reset();
+    } else {
+        controller.dropChip(getDropButtonPressed(e));
+    }
+}</code></pre>
+          <p class="result-line">Clicking the fifth Drop button calls <code>controller.dropChip(4)</code>.</p>
+        </li>
+
+        <li class="step step-controller" id="step-relay" aria-labelledby="step-relay-title">
+          <h2 class="step-title" id="step-relay-title"><span class="step-number" aria-hidden="true">2</span>The controller relays it</h2>
+          <p class="step-owner"><span class="tag tag-controller">Controller</span></p>
+          <p class="step-text"><code>ConnectFourController</code> knows nothing about the rules. It hands the column to the model, then asks the view to update the turn label.</p>
+<pre class="code"><code>public void dropChip(int column) {
+    model.dropChip(column);
+    view.switchTurns();
+}</code></pre>
+          <p class="step-text">The view only sees <code>ConnectFourControllerInterface</code> and the controller only sees <code>ConnectFourModelInterface</code>, so each class can be tested with Mockito mocks standing in for the others.</p>
+          <p class="step-note">Exit and Reset take the same route: <code>exit()</code> calls <code>model.exit()</code>, which ends the program with <code>System.exit(0)</code>, and <code>reset()</code> calls <code>model.reset()</code> and then <code>view.resetView()</code>.</p>
+        </li>
+
+        <li class="step step-model" id="step-place" aria-labelledby="step-place-title">
+          <h2 class="step-title" id="step-place-title"><span class="step-number" aria-hidden="true">3</span>The model places the chip</h2>
+          <p class="step-owner"><span class="tag tag-model">Model</span></p>
+          <p class="step-text"><code>ConnectFourModel</code> stores the board as a 6&nbsp;×&nbsp;7 <code>int</code> array: <code>0</code> for an empty slot, <code>1</code> for Player&nbsp;1 and <code>2</code> for Player&nbsp;2. A second array, <code>availableSpot</code>, holds the lowest free row in each column, so dropping a chip is a lookup rather than a search.</p>
+
+          <div class="panel">
+            <h3 class="panel-title">The board as the model sees it</h3>
+            <p class="panel-text">After the move, <code>board[2][4]</code> holds <code>1</code> and <code>availableSpot[4]</code> has moved up from <code>2</code> to <code>1</code>.</p>
+            <div class="model-view">
+              <div class="cells" data-rows="......./......./....R../...ry../..ryr../yryry.." role="img" aria-label="The board array as numbers. Row 2, column 4 now holds 1, the new chip."></div>
+              <div class="spots" role="img" aria-label="availableSpot after the move: 4, 4, 3, 2, 1, 5, 5. Column 4 changed from 2 to 1.">
+                <span class="spots-label mono" aria-hidden="true">availableSpot</span>
+                <span class="spots-values mono" aria-hidden="true"><span>4</span><span>4</span><span>3</span><span>2</span><span class="changed">1</span><span>5</span><span>5</span></span>
+              </div>
+            </div>
+          </div>
+
+<pre class="code"><code>board[availableSpot[column]][column] = currentPlayer.getId();
+currentRow = availableSpot[column];
+currentColumn = column;
+availableSpot[column]--;
+if (availableSpot[column] &lt; 0) {
+    disablingButton = column;
+}</code></pre>
+
+          <div class="panel">
+            <h3 class="panel-title">When a column fills up</h3>
+            <p class="panel-text">Every column starts with <code>availableSpot</code> at <code>5</code>, the bottom row. Each chip moves it up one row. Once it drops below <code>0</code> the column is full, and the model records the column in <code>disablingButton</code> so the view can switch its Drop button off.</p>
+            <div class="table-wrap">
+              <table class="data-table">
+                <caption class="visually-hidden">Chips dropped into one column and the availableSpot counter after each</caption>
+                <thead><tr><th scope="col">Chip</th><th scope="col">Lands in row</th><th scope="col">availableSpot after</th><th scope="col">Drop button</th></tr></thead>
+                <tbody>
+                  <tr><td>1st</td><td>5</td><td>4</td><td>Enabled</td></tr>
+                  <tr><td>2nd</td><td>4</td><td>3</td><td>Enabled</td></tr>
+                  <tr><td>3rd</td><td>3</td><td>2</td><td>Enabled</td></tr>
+                  <tr><td>4th</td><td>2</td><td>1</td><td>Enabled</td></tr>
+                  <tr><td>5th</td><td>1</td><td>0</td><td>Enabled</td></tr>
+                  <tr class="final"><td>6th</td><td>0</td><td>−1</td><td class="flag">Disabled</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </li>
+
+        <li class="step step-model" id="step-notify" aria-labelledby="step-notify-title">
+          <h2 class="step-title" id="step-notify-title"><span class="step-number" aria-hidden="true">4</span>Observers repaint the window</h2>
+          <p class="step-owner"><span class="tag tag-model">Model</span><span class="tag-arrow" aria-hidden="true">→</span><span class="tag tag-view">View</span></p>
+          <p class="step-text">The model never calls the view directly. It loops over its registered <code>ConnectFourObserver</code>s and calls <code>updateGame()</code> on each. The view registered itself in its constructor, so it receives the call and asks the model what changed.</p>
+
+          <div class="panel">
+            <h3 class="panel-title">The calls so far</h3>
+            <ol class="trace">
+              <li><span class="trace-route"><span class="tag tag-view">View</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-controller">Controller</span></span><code>dropChip(4)</code></li>
+              <li><span class="trace-route"><span class="tag tag-controller">Controller</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-model">Model</span></span><code>dropChip(4)</code></li>
+              <li><span class="trace-route"><span class="tag tag-model">Model</span></span><span><code>board[2][4] = 1</code>, <code>availableSpot[4] = 1</code></span></li>
+              <li><span class="trace-route"><span class="tag tag-model">Model</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-view">View</span></span><span><code>updateGame()</code> <span class="trace-note">through <code>ConnectFourObserver</code></span></span></li>
+              <li><span class="trace-route"><span class="tag tag-view">View</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-model">Model</span></span><span><code>getCurrentRow()</code> → 2, <code>getCurrentColumn()</code> → 4, <code>getColor()</code> → <span class="swatch swatch-p1" aria-hidden="true"></span>red</span></li>
+              <li><span class="trace-route"><span class="tag tag-view">View</span></span><span><code>dropChipInView(2, 4, RED)</code> paints the slot</span></li>
+              <li><span class="trace-route"><span class="tag tag-view">View</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-model">Model</span></span><span><code>getDisableButton()</code> → −1, so every Drop button stays on</span></li>
+            </ol>
+          </div>
+          <p class="step-note"><code>getColor()</code> returns the current player's color. It is still Player&nbsp;1's turn here, because the model switches players only after the observers have run.</p>
+        </li>
+
+        <li class="step step-model" id="step-scan" aria-labelledby="step-scan-title">
+          <h2 class="step-title" id="step-scan-title"><span class="step-number" aria-hidden="true">5</span>Scan for four in a row</h2>
+          <p class="step-owner"><span class="tag tag-model">Model</span></p>
+          <p class="step-text">Next, <code>checkWin()</code> looks across the whole board, not just around the new chip. Each check takes a starting slot that isn't empty and compares it with the next three slots in one direction. On a 6&nbsp;×&nbsp;7 board that is at most 69 windows, which is cheap enough not to need anything smarter.</p>
+
+          <div class="scan-grid">
+            <figure class="scan">
+              <div class="board board-mini" data-rows="......./......./......./......./.oooo../......." role="img" aria-label="A horizontal window of four slots in one row."></div>
+              <figcaption><strong>Horizontal</strong><span class="mono">24 windows</span></figcaption>
+            </figure>
+            <figure class="scan">
+              <div class="board board-mini" data-rows="......./..o..../..o..../..o..../..o..../......." role="img" aria-label="A vertical window of four slots in one column."></div>
+              <figcaption><strong>Vertical</strong><span class="mono">21 windows</span></figcaption>
+            </figure>
+            <figure class="scan">
+              <div class="board board-mini" data-rows="......./......./....R../...Ry../..Ryr../yRyry.." role="img" aria-label="A left diagonal window, rising to the right. In this game it holds the four red chips."></div>
+              <figcaption><strong>Left diagonal&nbsp;/</strong><span class="mono">12 windows</span></figcaption>
+            </figure>
+            <figure class="scan">
+              <div class="board board-mini" data-rows="......./o....../.o...../..o..../...o.../......." role="img" aria-label="A right diagonal window, falling to the right."></div>
+              <figcaption><strong>Right diagonal&nbsp;\</strong><span class="mono">12 windows</span></figcaption>
+            </figure>
+          </div>
+
+          <p class="result-line">For this move, all 24 horizontal and 21 vertical windows come up empty. The 10th left-diagonal window, starting at row&nbsp;2, column&nbsp;4, holds four <code>1</code>s, so the win is found on window 55.</p>
+          <p class="step-note"><code>checkWin()</code> joins the four scans with <code>||</code>, so it stops at the first line it finds. If nobody has won, <code>boardFull()</code> checks all 42 slots for a <code>0</code>; if none is left, the game is a draw.</p>
+        </li>
+
+        <li class="step step-all" id="step-reset" aria-labelledby="step-reset-title">
+          <h2 class="step-title" id="step-reset-title"><span class="step-number" aria-hidden="true">6</span>Announce the result and reset</h2>
+          <p class="step-owner"><span class="tag tag-model">Model</span><span class="tag tag-view">View</span><span class="tag tag-controller">Controller</span></p>
+          <p class="step-text">The model shows a dialog, <q>Player 1 wins!</q> or <q>The game ended as draw!</q>, and waits for OK. Then it notifies its <code>WinnerObserver</code>s. The view reacts to <code>updateWinner()</code> by asking the controller to reset, which clears both the model and the window.</p>
+
+          <div class="panel">
+            <h3 class="panel-title">The rest of the click</h3>
+            <ol class="trace" start="8" style="counter-reset: trace 7">
+              <li><span class="trace-route"><span class="tag tag-model">Model</span></span><span><code>JOptionPane.showMessageDialog(…)</code> shows <q>Player 1 wins!</q></span></li>
+              <li><span class="trace-route"><span class="tag tag-model">Model</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-view">View</span></span><span><code>updateWinner()</code> <span class="trace-note">through <code>WinnerObserver</code></span></span></li>
+              <li><span class="trace-route"><span class="tag tag-view">View</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-controller">Controller</span></span><code>reset()</code></li>
+              <li><span class="trace-route"><span class="tag tag-controller">Controller</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-model">Model</span></span><span><code>reset()</code> clears the board, refills <code>availableSpot</code> with 5 and makes Player&nbsp;1 current</span></li>
+              <li><span class="trace-route"><span class="tag tag-controller">Controller</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-view">View</span></span><span><code>resetView()</code> clears every slot, re-enables every Drop button and updates the label</span></li>
+              <li><span class="trace-route"><span class="tag tag-model">Model</span></span><span><code>switchPlayer()</code> twice, back in <code>dropChip</code></span></li>
+              <li><span class="trace-route"><span class="tag tag-controller">Controller</span><span class="tag-arrow" aria-label="calls">→</span><span class="tag tag-view">View</span></span><span><code>switchTurns()</code> sets the label to <q>Turn: Player 1</q></span></li>
+            </ol>
+          </div>
+
+          <div class="panel">
+            <h3 class="panel-title">Why Player 1 always starts the next game</h3>
+            <p class="panel-text">Every move ends with a player switch. A finished game adds one more, which cancels it out after the reset.</p>
+            <div class="table-wrap">
+              <table class="data-table">
+                <caption class="visually-hidden">The current player through the end of a game</caption>
+                <thead><tr><th scope="col">Moment</th><th scope="col">Current player</th></tr></thead>
+                <tbody>
+                  <tr><td>Reset during <code>updateWinner()</code></td><td><span class="swatch swatch-p1" aria-hidden="true"></span>Player 1</td></tr>
+                  <tr><td>Extra switch after a win or draw</td><td><span class="swatch swatch-p2" aria-hidden="true"></span>Player 2</td></tr>
+                  <tr class="final"><td>Switch at the end of every move</td><td><span class="swatch swatch-p1" aria-hidden="true"></span>Player 1</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </li>
+      </ol>
+
+      <section class="notes" aria-labelledby="notes-title">
+        <h2 id="notes-title">How it's put together</h2>
+        <div class="notes-grid">
+          <div class="note">
+            <h3>Interfaces between the layers</h3>
+            <p>The view only knows the controller's interface, the controller only knows the model's interface, and the model only knows its two observer interfaces. The one concrete link is the <code>ConnectFourView</code> that the controller creates.</p>
+          </div>
+          <div class="note">
+            <h3>Tested layer by layer</h3>
+            <p>More than 100 JUnit&nbsp;5 tests use Mockito to isolate each class. Win tests intercept the result dialog with <code>MockedStatic</code>, and the Swing tests run on the Event Dispatch Thread.</p>
+          </div>
+          <div class="note">
+            <h3>Checked on every change</h3>
+            <p>GitHub Actions builds every push and pull request, running Checkstyle (Google Java Style) and the full test suite under a virtual display. Tagging a version publishes a release with the JAR.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="run" id="run" aria-labelledby="run-title">
+        <h2 id="run-title">Run it yourself</h2>
+        <p class="run-intro">You need Java 21 or newer.</p>
+        <div class="run-grid">
+          <div class="run-option">
+            <h3>Download the game</h3>
+            <p><a class="button" href="connect-four.jar" download>Download connect-four.jar</a></p>
+            <p>Built from the latest <code>main</code> branch when this page was published. Run it with:</p>
+<pre class="code"><code>java -jar connect-four.jar</code></pre>
+          </div>
+          <div class="run-option">
+            <h3>Build from source</h3>
+            <p>The Gradle wrapper downloads everything else it needs. On Windows, use <code>gradlew.bat</code>.</p>
+<pre class="code"><code>git clone https://github.com/NiharParikh17/Connect-Four.git
+cd Connect-Four
+./gradlew run</code></pre>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Connect Four is open source under the MIT License.</p>
+    <p class="footer-links">
+      <a href="https://github.com/NiharParikh17/Connect-Four">Source code</a>
+      <a href="https://github.com/NiharParikh17/Connect-Four#readme">Documentation</a>
+      <a href="https://github.com/NiharParikh17/Connect-Four/releases">Releases</a>
+      <a href="https://github.com/NiharParikh17/Connect-Four/issues/new">Report an issue</a>
+    </p>
+    <p class="footer-meta">Java 21 · Swing · Gradle</p>
+  </footer>
+</body>
+</html>
