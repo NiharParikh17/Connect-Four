@@ -62,8 +62,12 @@ public interface ConnectFourModelInterface {
     int getCurrentColumn();
 
     /**
-     * Returns the color associated with the player who just dropped a chip.
-     * Used by the View to paint the correct chip color in the board slot.
+     * Returns the color of the player whose turn it currently is.
+     *
+     * <p>Observers are notified before the turn passes to the next player, so
+     * during a {@link ConnectFourObserver#updateGame()} callback this is the
+     * color of the player who just dropped a chip. The View relies on this to
+     * paint the correct chip color in the board slot.</p>
      *
      * @return {@link Color} of the current player (Red for Player 1,
      *         Yellow for Player 2)
@@ -88,10 +92,14 @@ public interface ConnectFourModelInterface {
      *   <li>Notifies all {@link ConnectFourObserver}s to refresh the board.</li>
      *   <li>Checks for a winning condition (horizontal, vertical, diagonal).</li>
      *   <li>Checks for a draw (board completely full).</li>
-     *   <li>Notifies {@link WinnerObserver}s and switches the player if the
-     *       game has ended.</li>
+     *   <li>If the game has ended, shows a dialog announcing the result,
+     *       notifies {@link WinnerObserver}s (which reset the game), and
+     *       switches the player an extra time.</li>
      *   <li>Always switches the player at the end of the turn.</li>
      * </ol>
+     *
+     * <p>Because a finished game is reset to Player 1 and the player is then
+     * switched twice, Player 1 always starts the next game.</p>
      *
      * @param column zero-based index of the column (0 to totalColumns - 1)
      *               into which the chip should be dropped; the caller is

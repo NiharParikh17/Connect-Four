@@ -30,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
   * direction, column-fill disabling, and reset behaviour.</p>
   *
   * <p>{@link JOptionPane} static calls are intercepted with
-  * {@code MockedStatic} so that win / draw tests never block on a dialog.</p>
+  * {@code MockedStatic} so that win tests never block on a dialog.</p>
   */
 @ExtendWith(MockitoExtension.class)
 class ConnectFourModelTest {
