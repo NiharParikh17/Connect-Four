@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How the game works
+    url: https://connectfour.nhparikh.com/
+    about: Follow one move through the View, Controller and Model, including the win check and the reset.
+  - name: Documentation
+    url: https://github.com/NiharParikh17/Connect-Four#readme
+    about: Prerequisites, running the game, tests and the CI/CD workflows.

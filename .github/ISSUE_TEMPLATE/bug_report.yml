@@ -1,0 +1,68 @@
+name: Bug report
+description: Something does not work as documented.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Before you start, check the
+        [prerequisites](https://github.com/NiharParikh17/Connect-Four#prerequisites):
+        the game needs Java 21 or newer and a graphical display.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where is the problem?
+      options:
+        - Playing the game
+        - Building or running the tests
+        - The website
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe what you saw. Include the full error message or stack trace if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: >-
+        For a gameplay problem, list the columns played in order, counting from 0 on
+        the left, so the game can be replayed exactly. Otherwise, list the commands you ran.
+      placeholder: |
+        Columns played: 3, 3, 4, 4, 5, 5
+        Then clicked Reset.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: dropdown
+    id: launch
+    attributes:
+      label: How did you start the game?
+      options:
+        - ./gradlew run
+        - connect-four.jar downloaded from the website
+        - connect-four.jar built locally
+        - From an IDE
+        - Not applicable
+  - type: input
+    id: java
+    attributes:
+      label: Java version
+      description: First line of `java -version`. Not needed for website problems.
+      placeholder: openjdk version "21.0.5"
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 15, Ubuntu 24.04, Windows 11

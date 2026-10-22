@@ -11,17 +11,18 @@ A classic two-player **Connect Four** board game built in Java with a graphical 
 ## Table of Contents
 
 - [About the Game](#about-the-game)
-- [Tech Stack](#tech-stack)
-- [Architecture & Design Patterns](#architecture--design-patterns)
-- [Project Structure](#project-structure)
+- [How to Play](#how-to-play)
 - [Prerequisites](#prerequisites)
 - [How to Run](#how-to-run)
+- [Architecture & Design Patterns](#architecture--design-patterns)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
 - [How to Run Tests](#how-to-run-tests)
 - [Code Style (Checkstyle)](#code-style-checkstyle)
 - [CI/CD](#cicd)
-- [Gameplay](#gameplay)
+- [Contributing](#contributing)
+- [Reporting Issues](#reporting-issues)
 - [License](#license)
-- [Author](#author)
 
 ---
 
@@ -31,92 +32,20 @@ Connect Four is a two-player strategy game played on a **6-row × 7-column** ver
 
 ---
 
-## Tech Stack
+## How to Play
 
-| Technology | Purpose |
+| Control | Action |
 |---|---|
-| **Java** (JDK 21) | Core programming language |
-| **Java Swing** (`javax.swing`) | GUI framework for the game window |
-| **Java AWT** (`java.awt`) | Layout management and color handling |
-| **Lombok** | Boilerplate reduction (`@Getter`, `@AllArgsConstructor`) |
-| **Gradle** | Build tool & dependency management |
-| **JUnit Jupiter** | Unit testing framework |
-| **Mockito** | Mocking framework for isolated unit tests |
-| **Checkstyle** | Static analysis enforcing Google Java Style |
-| **GitHub Actions** | Continuous integration, release automation, and website deployment |
-| **GitHub Pages** | Hosts the project website |
+| **Drop** button (above each column) | Drop a chip into that column |
+| **Reset** button | Clear the board and start a new game |
+| **Exit** button | Close the application |
 
----
-
-## Architecture & Design Patterns
-
-### MVC (Model-View-Controller)
-
-| Layer | Class | Responsibility |
-|---|---|---|
-| **Model** | `ConnectFourModel` | Game state, board logic, win/draw detection |
-| **View** | `ConnectFourView` | Swing GUI — renders the board and handles user input |
-| **Controller** | `ConnectFourController` | Bridges user actions from the View to the Model |
-
-The Model and Controller are accessed through their interfaces (`ConnectFourModelInterface`, `ConnectFourControllerInterface`), which keeps components loosely coupled and easy to swap or test. The View has no separate interface; the Controller holds the concrete `ConnectFourView`.
-
-### Observer Pattern
-
-Two observer interfaces decouple the Model from the View:
-
-- **`ConnectFourObserver`** — notified after every chip drop to update the board visually.
-- **`WinnerObserver`** — notified when the game ends (win or draw) to trigger an automatic reset.
-
----
-
-## Project Structure
-
-```
-Connect-Four/
-├── .github/
-│   ├── dependabot.yml                   # Monthly dependency & action updates
-│   └── workflows/
-│       ├── ci.yml                       # Build, test & Checkstyle on push / PR
-│       ├── pages.yml                    # Publish web/ to GitHub Pages
-│       └── release.yml                  # Publish a GitHub release on version tags
-├── configuration/
-│   └── checkstyle/
-│       └── google_checks.xml            # Checkstyle ruleset
-├── gradle/
-│   └── wrapper/                         # Gradle wrapper JAR & properties
-├── build.gradle                         # Build configuration
-├── settings.gradle                      # Project name
-├── gradlew / gradlew.bat                # Gradle wrapper scripts
-├── web/                                 # Project website (index.html, styles.css, app.js)
-└── src/
-    ├── main/
-    │   └── java/
-    │       └── connectfour/
-    │           ├── controller/
-    │           │   ├── ConnectFourController.java           # Controller implementation
-    │           │   └── ConnectFourControllerInterface.java  # Controller contract
-    │           ├── model/
-    │           │   ├── ConnectFourModel.java                # Game logic & state (Model)
-    │           │   ├── ConnectFourModelInterface.java       # Model contract
-    │           │   └── Player.java                          # Player data (name, id, color)
-    │           ├── observer/
-    │           │   ├── ConnectFourObserver.java             # Observer interface (per-turn)
-    │           │   └── WinnerObserver.java                  # Observer interface (end-game)
-    │           └── view/
-    │               └── ConnectFourView.java                 # Swing GUI (View) + main entry point
-    └── test/
-        ├── java/
-        │   └── connectfour/
-        │       ├── controller/
-        │       │   └── ConnectFourControllerTest.java       # Controller unit tests
-        │       ├── model/
-        │       │   └── ConnectFourModelTest.java            # Model unit tests
-        │       └── view/
-        │           └── ConnectFourViewTest.java             # View unit tests
-        └── resources/
-            └── mockito-extensions/
-                └── org.mockito.plugins.MockMaker            # Enables Mockito's inline mock maker
-```
+- **Player 1** plays with 🔴 **Red** chips and always starts a new game.  
+- **Player 2** plays with 🟡 **Yellow** chips.  
+- The current player's turn is displayed at the top of the window.  
+- A column's **Drop** button is automatically disabled when the column is full.  
+- A dialog box announces the winner or a draw, and the board resets automatically.  
+- Closing the game window also exits the application.
 
 ---
 
@@ -129,6 +58,13 @@ Connect-Four/
 ---
 
 ## How to Run
+
+### Download the Game
+
+The quickest way to play is to download [`connect-four.jar`](https://connectfour.nhparikh.com/connect-four.jar), which the website builds from the latest `main`, and run it with Java 21 or newer:
+```bash
+java -jar connect-four.jar
+```
 
 ### Using an IDE
 
@@ -176,6 +112,96 @@ On Windows, use `gradlew.bat` in place of `./gradlew`.
    ```bash
    ./gradlew clean build
    ```
+
+---
+
+## Architecture & Design Patterns
+
+### MVC (Model-View-Controller)
+
+| Layer | Class | Responsibility |
+|---|---|---|
+| **Model** | `ConnectFourModel` | Game state, board logic, win/draw detection |
+| **View** | `ConnectFourView` | Swing GUI — renders the board and handles user input |
+| **Controller** | `ConnectFourController` | Bridges user actions from the View to the Model |
+
+The Model and Controller are accessed through their interfaces (`ConnectFourModelInterface`, `ConnectFourControllerInterface`), which keeps components loosely coupled and easy to swap or test. The View has no separate interface; the Controller holds the concrete `ConnectFourView`.
+
+### Observer Pattern
+
+Two observer interfaces decouple the Model from the View:
+
+- **`ConnectFourObserver`** — notified after every chip drop to update the board visually.
+- **`WinnerObserver`** — notified when the game ends (win or draw) to trigger an automatic reset.
+
+---
+
+## Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| **Java** (JDK 21) | Core programming language |
+| **Java Swing** (`javax.swing`) | GUI framework for the game window |
+| **Java AWT** (`java.awt`) | Layout management and color handling |
+| **Lombok** | Boilerplate reduction (`@Getter`, `@AllArgsConstructor`) |
+| **Gradle** | Build tool & dependency management |
+| **JUnit Jupiter** | Unit testing framework |
+| **Mockito** | Mocking framework for isolated unit tests |
+| **Checkstyle** | Static analysis enforcing Google Java Style |
+| **GitHub Actions** | Continuous integration, release automation, and website deployment |
+| **GitHub Pages** | Hosts the project website |
+
+---
+
+## Project Structure
+
+```
+Connect-Four/
+├── .github/
+│   ├── ISSUE_TEMPLATE/                  # Bug report & feature request forms
+│   ├── dependabot.yml                   # Monthly dependency & action updates
+│   └── workflows/
+│       ├── ci.yml                       # Build, test & Checkstyle on push / PR
+│       ├── pages.yml                    # Publish web/ to GitHub Pages
+│       └── release.yml                  # Publish a GitHub release on version tags
+├── configuration/
+│   └── checkstyle/
+│       └── google_checks.xml            # Checkstyle ruleset
+├── gradle/
+│   └── wrapper/                         # Gradle wrapper JAR & properties
+├── build.gradle                         # Build configuration
+├── settings.gradle                      # Project name
+├── gradlew / gradlew.bat                # Gradle wrapper scripts
+├── web/                                 # Project website (index.html, styles.css, app.js)
+└── src/
+    ├── main/
+    │   └── java/
+    │       └── connectfour/
+    │           ├── controller/
+    │           │   ├── ConnectFourController.java           # Controller implementation
+    │           │   └── ConnectFourControllerInterface.java  # Controller contract
+    │           ├── model/
+    │           │   ├── ConnectFourModel.java                # Game logic & state (Model)
+    │           │   ├── ConnectFourModelInterface.java       # Model contract
+    │           │   └── Player.java                          # Player data (name, id, color)
+    │           ├── observer/
+    │           │   ├── ConnectFourObserver.java             # Observer interface (per-turn)
+    │           │   └── WinnerObserver.java                  # Observer interface (end-game)
+    │           └── view/
+    │               └── ConnectFourView.java                 # Swing GUI (View) + main entry point
+    └── test/
+        ├── java/
+        │   └── connectfour/
+        │       ├── controller/
+        │       │   └── ConnectFourControllerTest.java       # Controller unit tests
+        │       ├── model/
+        │       │   └── ConnectFourModelTest.java            # Model unit tests
+        │       └── view/
+        │           └── ConnectFourViewTest.java             # View unit tests
+        └── resources/
+            └── mockito-extensions/
+                └── org.mockito.plugins.MockMaker            # Enables Mockito's inline mock maker
+```
 
 ---
 
@@ -269,29 +295,26 @@ Dependabot checks monthly for new Gradle dependency and GitHub Actions versions,
 
 ---
 
-## Gameplay
+## Contributing
 
-| Control | Action |
-|---|---|
-| **Drop** button (above each column) | Drop a chip into that column |
-| **Reset** button | Clear the board and start a new game |
-| **Exit** button | Close the application |
+Contributions are welcome. For anything larger than a small fix, please [open an issue](#reporting-issues) first so the change can be discussed.
 
-- **Player 1** plays with 🔴 **Red** chips and always starts a new game.  
-- **Player 2** plays with 🟡 **Yellow** chips.  
-- The current player's turn is displayed at the top of the window.  
-- A column's **Drop** button is automatically disabled when the column is full.  
-- A dialog box announces the winner or a draw, and the board resets automatically.  
-- Closing the game window also exits the application.
+1. Fork the repository and create a branch from `main`.
+2. Make your change, adding or updating tests for it.
+3. Run `./gradlew clean build`. It compiles the code, runs every test, and fails on any Checkstyle violation.
+4. Open a pull request against `main`. CI runs the same build on every pull request.
+
+---
+
+## Reporting Issues
+
+Found a bug or have an idea? [Open an issue](https://github.com/NiharParikh17/Connect-Four/issues/new/choose) and pick a form:
+
+- **Bug report** — for gameplay problems, list the columns played in order (counting from 0 on the left) so the game can be replayed exactly. Include your Java version and operating system.
+- **Feature request** — describe the problem first, then the change you would like.
 
 ---
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-## Author
-
-**Nihar Parikh**
