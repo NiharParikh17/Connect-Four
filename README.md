@@ -4,6 +4,8 @@
 
 A classic two-player **Connect Four** board game built in Java with a graphical user interface powered by **Java Swing**. The project demonstrates clean software design through the **MVC (Model-View-Controller)** architectural pattern combined with the **Observer** design pattern.
 
+**See how it works:** <https://connectfour.nhparikh.com> follows one winning move through the View, Controller and Model, step by step.
+
 ---
 
 ## Table of Contents
@@ -41,7 +43,8 @@ Connect Four is a two-player strategy game played on a **6-row × 7-column** ver
 | **JUnit Jupiter** | Unit testing framework |
 | **Mockito** | Mocking framework for isolated unit tests |
 | **Checkstyle** | Static analysis enforcing Google Java Style |
-| **GitHub Actions** | Continuous integration and release automation |
+| **GitHub Actions** | Continuous integration, release automation, and website deployment |
+| **GitHub Pages** | Hosts the project website |
 
 ---
 
@@ -74,6 +77,7 @@ Connect-Four/
 │   ├── dependabot.yml                   # Monthly dependency & action updates
 │   └── workflows/
 │       ├── ci.yml                       # Build, test & Checkstyle on push / PR
+│       ├── pages.yml                    # Publish web/ to GitHub Pages
 │       └── release.yml                  # Publish a GitHub release on version tags
 ├── configuration/
 │   └── checkstyle/
@@ -83,6 +87,7 @@ Connect-Four/
 ├── build.gradle                         # Build configuration
 ├── settings.gradle                      # Project name
 ├── gradlew / gradlew.bat                # Gradle wrapper scripts
+├── web/                                 # Project website (index.html, styles.css, app.js)
 └── src/
     ├── main/
     │   └── java/
@@ -223,7 +228,7 @@ Both checks also run as part of `./gradlew check` and `./gradlew build`. HTML an
 
 ## CI/CD
 
-The project uses **GitHub Actions** for continuous integration and releases.
+The project uses **GitHub Actions** for continuous integration, releases, and the project website.
 
 ### Continuous Integration (`.github/workflows/ci.yml`)
 
@@ -248,6 +253,15 @@ Pushing a tag that starts with `v` builds and tests the project, then creates a 
    ```
 
 The workflow fails if the tag does not match the version in `build.gradle`.
+
+### Website (`.github/workflows/pages.yml`)
+
+The explainer at <https://connectfour.nhparikh.com> is a static page in `web/`, with no build step. When a push to `main` changes `web/`, the game's sources, or the build files, the workflow builds `connect-four.jar` from the same commit and publishes it to GitHub Pages alongside the page, so the site's download link always serves the latest game. It can also be run manually from the **Actions** tab.
+
+To preview the site locally, serve the `web/` folder with any static file server, for example:
+```bash
+python3 -m http.server --directory web
+```
 
 ### Dependency Updates (`.github/dependabot.yml`)
 
