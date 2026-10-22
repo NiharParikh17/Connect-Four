@@ -16,9 +16,13 @@ import lombok.AllArgsConstructor;
  * needs a direct reference to the other's concrete implementation, preserving
  * the separation of concerns central to MVC.</p>
  *
- * <p><b>Lifecycle:</b> Instantiating this class automatically creates a
- * {@link ConnectFourView} and registers it as an observer with the Model so
- * the GUI is ready to display game state immediately.</p>
+ * <p><b>Lifecycle:</b> Instantiating this class with
+ * {@link #ConnectFourController(ConnectFourModelInterface)} automatically
+ * creates a {@link ConnectFourView} and registers it as an observer with the
+ * Model so the GUI is ready to display game state immediately. A second,
+ * Lombok-generated constructor accepting both a Model and an existing View is
+ * also available, which allows a View to be injected (e.g., a mock in unit
+ * tests).</p>
  *
  * @see ConnectFourControllerInterface
  */

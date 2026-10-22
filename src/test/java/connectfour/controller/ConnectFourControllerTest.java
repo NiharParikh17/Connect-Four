@@ -37,7 +37,7 @@ class ConnectFourControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Use the package-private constructor to inject mocks, bypassing Swing creation.
+        // Use the all-args constructor to inject mocks, bypassing Swing creation.
         controller = new ConnectFourController(mockModel, mockView);
     }
 
