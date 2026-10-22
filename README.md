@@ -20,6 +20,7 @@ A classic two-player **Connect Four** board game built in Java with a graphical 
 - [Code Style (Checkstyle)](#code-style-checkstyle)
 - [CI/CD](#cicd)
 - [Gameplay](#gameplay)
+- [Reporting Issues](#reporting-issues)
 - [License](#license)
 - [Author](#author)
 
@@ -74,6 +75,7 @@ Two observer interfaces decouple the Model from the View:
 ```
 Connect-Four/
 ├── .github/
+│   ├── ISSUE_TEMPLATE/                  # Bug report & feature request forms
 │   ├── dependabot.yml                   # Monthly dependency & action updates
 │   └── workflows/
 │       ├── ci.yml                       # Build, test & Checkstyle on push / PR
@@ -283,6 +285,15 @@ Dependabot checks monthly for new Gradle dependency and GitHub Actions versions,
 - A column's **Drop** button is automatically disabled when the column is full.  
 - A dialog box announces the winner or a draw, and the board resets automatically.  
 - Closing the game window also exits the application.
+
+---
+
+## Reporting Issues
+
+Found a bug or have an idea? [Open an issue](https://github.com/NiharParikh17/Connect-Four/issues/new/choose) and pick a form:
+
+- **Bug report** — for gameplay problems, list the columns played in order (counting from 0 on the left) so the game can be replayed exactly. Include your Java version and operating system.
+- **Feature request** — describe the problem first, then the change you would like.
 
 ---
 
