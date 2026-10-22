@@ -132,6 +132,13 @@ Connect-Four/
 
 ## How to Run
 
+### Download the Game
+
+The quickest way to play is to download [`connect-four.jar`](https://connectfour.nhparikh.com/connect-four.jar), which the website builds from the latest `main`, and run it with Java 21 or newer:
+```bash
+java -jar connect-four.jar
+```
+
 ### Using an IDE
 
 1. **Clone the repository:**
