@@ -31,12 +31,12 @@ test {
 }
 
 application {
-    mainClass = 'ConnectFour.ConnectFourView'
+    mainClass = 'connectfour.view.ConnectFourView'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'ConnectFour.ConnectFourView'
+        attributes 'Main-Class': application.mainClass
     }
     archiveFileName = 'connect-four.jar'
 }

@@ -1,5 +1,7 @@
 # Connect Four
 
+[![CI](https://github.com/NiharParikh17/Connect-Four/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/NiharParikh17/Connect-Four/actions/workflows/ci.yml)
+
 A classic two-player **Connect Four** board game built in Java with a graphical user interface powered by **Java Swing**. The project demonstrates clean software design through the **MVC (Model-View-Controller)** architectural pattern combined with the **Observer** design pattern.
 
 ---
@@ -10,10 +12,13 @@ A classic two-player **Connect Four** board game built in Java with a graphical 
 - [Tech Stack](#tech-stack)
 - [Architecture & Design Patterns](#architecture--design-patterns)
 - [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
 - [How to Run](#how-to-run)
 - [How to Run Tests](#how-to-run-tests)
 - [Code Style (Checkstyle)](#code-style-checkstyle)
+- [CI/CD](#cicd)
 - [Gameplay](#gameplay)
+- [License](#license)
 - [Author](#author)
 
 ---
@@ -36,6 +41,7 @@ Connect Four is a two-player strategy game played on a **6-row × 7-column** ver
 | **JUnit Jupiter** | Unit testing framework |
 | **Mockito** | Mocking framework for isolated unit tests |
 | **Checkstyle** | Static analysis enforcing Google Java Style |
+| **GitHub Actions** | Continuous integration and release automation |
 
 ---
 
@@ -49,7 +55,7 @@ Connect Four is a two-player strategy game played on a **6-row × 7-column** ver
 | **View** | `ConnectFourView` | Swing GUI — renders the board and handles user input |
 | **Controller** | `ConnectFourController` | Bridges user actions from the View to the Model |
 
-Each layer communicates through its corresponding interface (`ConnectFourModelInterface`, `ConnectFourControllerInterface`), which keeps components loosely coupled and easy to swap or test.
+The Model and Controller are accessed through their interfaces (`ConnectFourModelInterface`, `ConnectFourControllerInterface`), which keeps components loosely coupled and easy to swap or test. The View has no separate interface; the Controller holds the concrete `ConnectFourView`.
 
 ### Observer Pattern
 
@@ -64,9 +70,19 @@ Two observer interfaces decouple the Model from the View:
 
 ```
 Connect-Four/
+├── .github/
+│   ├── dependabot.yml                   # Monthly dependency & action updates
+│   └── workflows/
+│       ├── ci.yml                       # Build, test & Checkstyle on push / PR
+│       └── release.yml                  # Publish a GitHub release on version tags
 ├── configuration/
 │   └── checkstyle/
-│       └── google_checks.xml        # Checkstyle ruleset
+│       └── google_checks.xml            # Checkstyle ruleset
+├── gradle/
+│   └── wrapper/                         # Gradle wrapper JAR & properties
+├── build.gradle                         # Build configuration
+├── settings.gradle                      # Project name
+├── gradlew / gradlew.bat                # Gradle wrapper scripts
 └── src/
     ├── main/
     │   └── java/
@@ -77,22 +93,33 @@ Connect-Four/
     │           ├── model/
     │           │   ├── ConnectFourModel.java                # Game logic & state (Model)
     │           │   ├── ConnectFourModelInterface.java       # Model contract
-    │           │   └── Player.java                         # Player data (name, id, color)
+    │           │   └── Player.java                          # Player data (name, id, color)
     │           ├── observer/
     │           │   ├── ConnectFourObserver.java             # Observer interface (per-turn)
     │           │   └── WinnerObserver.java                  # Observer interface (end-game)
     │           └── view/
     │               └── ConnectFourView.java                 # Swing GUI (View) + main entry point
     └── test/
-        └── java/
-            └── connectfour/
-                ├── controller/
-                │   └── ConnectFourControllerTest.java       # Controller unit tests
-                ├── model/
-                │   └── ConnectFourModelTest.java            # Model unit tests
-                └── view/
-                    └── ConnectFourViewTest.java             # View unit tests
+        ├── java/
+        │   └── connectfour/
+        │       ├── controller/
+        │       │   └── ConnectFourControllerTest.java       # Controller unit tests
+        │       ├── model/
+        │       │   └── ConnectFourModelTest.java            # Model unit tests
+        │       └── view/
+        │           └── ConnectFourViewTest.java             # View unit tests
+        └── resources/
+            └── mockito-extensions/
+                └── org.mockito.plugins.MockMaker            # Enables Mockito's inline mock maker
 ```
+
+---
+
+## Prerequisites
+
+- **JDK 21 or newer.** The project compiles to Java 21 bytecode.
+- **No Gradle installation needed.** The included Gradle wrapper (`gradlew`) downloads the Gradle version pinned in `gradle/wrapper/gradle-wrapper.properties` on first use.
+- **A graphical display.** Both the game and the `ConnectFourView` tests create Swing windows. On a headless Linux machine, wrap Gradle commands with `xvfb-run` (see [How to Run Tests](#how-to-run-tests)).
 
 ---
 
@@ -102,7 +129,7 @@ Connect-Four/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/Connect-Four.git
+   git clone https://github.com/NiharParikh17/Connect-Four.git
    ```
 
 2. **Open the project** in any Java IDE that supports Gradle (e.g., IntelliJ IDEA, Eclipse, VS Code). The IDE should automatically detect and import the Gradle build file.
@@ -112,6 +139,8 @@ Connect-Four/
    - Run the `main` method directly from the IDE, or use the Gradle `run` task from the IDE's Gradle tool window.
 
 ### Using the Gradle Wrapper (Command Line)
+
+On Windows, use `gradlew.bat` in place of `./gradlew`.
 
 1. **Run** the application directly:
    ```bash
@@ -131,11 +160,16 @@ Connect-Four/
    ```bash
    ./gradlew assembleDist
    ```
-   Archives are placed in `build/distributions/`.
+   Archives are placed in `build/distributions/` (e.g., `Connect-Four-1.0.0.zip`). To get an unpacked copy instead, run `./gradlew installDist` and launch `build/install/Connect-Four/bin/Connect-Four`.
 
 4. **Compile** only (no run):
    ```bash
    ./gradlew compileJava
+   ```
+
+5. **Full build** (compile, tests, Checkstyle, JAR, and distributions; the same command CI runs):
+   ```bash
+   ./gradlew clean build
    ```
 
 ---
@@ -146,7 +180,7 @@ The project has a comprehensive unit test suite covering all three MVC layers.
 
 | Test Class | Tests Cover |
 |---|---|
-| `ConnectFourModelTest` | Board initialization, chip placement, player alternation, observer notifications, horizontal / vertical / diagonal win detection, draw detection, column-fill disabling, and reset |
+| `ConnectFourModelTest` | Board initialization, chip placement, player alternation, observer registration / removal and notifications, horizontal / vertical / diagonal win detection, column-fill disabling, and reset |
 | `ConnectFourControllerTest` | Correct delegation order to Model and View for `dropChip`, `reset`, and `exit` |
 | `ConnectFourViewTest` | Observer registration, slot painting, button enabling/disabling, `updateGame` & `updateWinner` callbacks, and all button `ActionEvent` routes |
 
@@ -155,12 +189,17 @@ Run the full test suite with:
 ./gradlew test
 ```
 
+On a headless Linux machine (no display), run the tests under a virtual display:
+```bash
+xvfb-run --auto-servernum ./gradlew test
+```
+
 An HTML report is generated at `build/reports/tests/test/index.html`.
 
 > **Implementation notes:**
 > - Tests use **JUnit Jupiter** with `@ParameterizedTest` and `@ValueSource` for exhaustive column coverage.
 > - **Mockito** mocks are injected via `@ExtendWith(MockitoExtension.class)` to isolate each layer.
-> - `JOptionPane` static calls are intercepted with `MockedStatic` so win/draw tests never block on a dialog.
+> - `JOptionPane` static calls are intercepted with `MockedStatic` so win tests never block on a dialog.
 > - All Swing assertions run on the Event Dispatch Thread via `SwingUtilities.invokeAndWait`.
 
 ---
@@ -178,7 +217,41 @@ Run style checks manually:
 ./gradlew checkstyleTest
 ```
 
-HTML and XML reports are generated under `build/reports/checkstyle/`. The build fails on any violation (`ignoreFailures = false`, `maxWarnings = 0`).
+Both checks also run as part of `./gradlew check` and `./gradlew build`. HTML and XML reports are generated under `build/reports/checkstyle/`. The build fails on any violation (`ignoreFailures = false`, `maxWarnings = 0`).
+
+---
+
+## CI/CD
+
+The project uses **GitHub Actions** for continuous integration and releases.
+
+### Continuous Integration (`.github/workflows/ci.yml`)
+
+Runs on every push and pull request to `main`, and can be started manually from the **Actions** tab. The workflow:
+
+1. Validates the Gradle wrapper JAR checksum.
+2. Sets up JDK 21 (Temurin) with Gradle dependency caching.
+3. Runs `./gradlew clean build` under Xvfb, so compilation, all unit tests, and Checkstyle must pass.
+4. Uploads the test and Checkstyle reports (even when the build fails) and the built JAR and distributions as workflow artifacts.
+
+### Releases (`.github/workflows/release.yml`)
+
+Pushing a tag that starts with `v` builds and tests the project, then creates a GitHub release with generated notes and attaches `connect-four.jar` plus the `.zip` and `.tar` distributions. To publish a release:
+
+1. Update `version` in `build.gradle` (e.g., `1.1.0`) and merge the change to `main`.
+2. Tag the commit with the matching version and push the tag:
+   ```bash
+   git tag v1.1.0
+   ```
+   ```bash
+   git push origin v1.1.0
+   ```
+
+The workflow fails if the tag does not match the version in `build.gradle`.
+
+### Dependency Updates (`.github/dependabot.yml`)
+
+Dependabot checks monthly for new Gradle dependency and GitHub Actions versions, grouping each into a single pull request that CI verifies.
 
 ---
 
@@ -190,11 +263,18 @@ HTML and XML reports are generated under `build/reports/checkstyle/`. The build 
 | **Reset** button | Clear the board and start a new game |
 | **Exit** button | Close the application |
 
-- **Player 1** plays with 🔴 **Red** chips.  
+- **Player 1** plays with 🔴 **Red** chips and always starts a new game.  
 - **Player 2** plays with 🟡 **Yellow** chips.  
 - The current player's turn is displayed at the top of the window.  
 - A column's **Drop** button is automatically disabled when the column is full.  
-- A dialog box announces the winner or a draw, and the board resets automatically.
+- A dialog box announces the winner or a draw, and the board resets automatically.  
+- Closing the game window also exits the application.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
